@@ -267,38 +267,35 @@ st.markdown(
 import streamlit as st
 import streamlit.components.v1 as components
 
-clock_html = """
-<div id="live-clock" style="font-size: 20px; font-weight: bold;"></div>
+components.html(
+    """
+    <div id="clock" style="
+        font-family: 'Arial Black', Gadget, sans-serif;
+        font-size: 48px;
+        color: white;
+        font-weight: bold;
+        text-align: center;
+        ">
+    </div>
 
-<script>
-function updateClock() {
-    const now = new Date();
-
-    const months = [
-        "January", "February", "March", "April", "May", "June",
-        "July", "August", "September", "October", "November", "December"
-    ];
-
-    const month = months[now.getMonth()];
-    const day = now.getDate();
-    const year = now.getFullYear();
-
-    let hours = now.getHours();
-    const ampm = hours >= 12 ? "PM" : "AM";
-    hours = hours % 12;
-    hours = hours ? hours : 12;
-
-    const minutes = now.getMinutes().toString().padStart(2, '0');
-    const seconds = now.getSeconds().toString().padStart(2, '0');
-
-    const timeString = `${month} ${day}, ${year}  ${hours}:${minutes}:${seconds} ${ampm}`;
-
-    document.getElementById('live-clock').textContent = timeString;
-}
-
-updateClock();
-setInterval(updateClock, 1000);
-</script>
-"""
-
-components.html(clock_html, height=40)
+    <script>
+    function updateClock() {
+        const now = new Date();
+        const options = {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric',
+            second: 'numeric',
+            hour12: true
+        };
+        document.getElementById('clock').textContent = now.toLocaleString('en-US', options);
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+    </script>
+    """,
+    height=80,
+    scrolling=False,
+)
