@@ -58,7 +58,8 @@ st.markdown(
 
 # === AUTO REFRESH ===
 # Refresh every 60 seconds for weather & news ticker
-count = st_autorefresh(interval=60000, limit=None, key="refresh_every_minute")
+st_autorefresh(interval=600000, limit=None, key="refresh_every_10min")
+
 
 # === HEADER ===
 st.title("🌤️ Alan's Daily Dashboard")
