@@ -68,26 +68,12 @@ def fetch_news_headlines():
     headlines = [entry.title for entry in feed.entries[:10]]  # top 10 headlines
     return headlines
 
-headlines = fetch_news_headlines()
-
-if headlines:
-    for headline in headlines:
-        st.write("- " + headline)
-else:
-    st.write("No headlines found.")
-
 import streamlit as st
 import requests
 import feedparser
-
-# Auto-refresh every 60 seconds (60000 ms)
-st.experimental_set_query_params()  # clears URL params so refresh triggers properly
-st_autorefresh = st.experimental_rerun
-
-# You can use st_autorefresh for timed reruns — here’s how:
 from streamlit_autorefresh import st_autorefresh
 
-# Refresh every 60 seconds (60000 ms)
+# Auto-refresh every 60 seconds (60000 ms)
 count = st_autorefresh(interval=60000, limit=None, key="ticker_refresh")
 
 def fetch_news_headlines():
@@ -103,15 +89,13 @@ headlines = fetch_news_headlines()
 if headlines:
     colors = ["#FF6347", "#4CAF50", "#2196F3", "#FFD700"]  # cycle of colors
 
-    # Wrap each headline in a colored span
     colored_headlines = []
     for i, hl in enumerate(headlines):
         color = colors[i % len(colors)]
         colored_headlines.append(f'<span style="color:{color}; margin-right: 30px;">{hl}</span>')
 
     ticker_text = ''.join(colored_headlines)
-    # Duplicate ticker text to make seamless loop
-    ticker_text = ticker_text + ticker_text
+    ticker_text = ticker_text + ticker_text  # duplicate for seamless scrolling
 
     ticker_html = f"""
     <div style="position: fixed; bottom: 0; width: 100%; background: #222; overflow: hidden; white-space: nowrap; box-sizing: border-box; padding: 10px 0; z-index: 1000;">
@@ -132,4 +116,3 @@ if headlines:
 
 else:
     st.write("No headlines found.")
-
