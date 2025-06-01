@@ -265,37 +265,40 @@ st.markdown(
 # Date and Time
 
 import streamlit as st
+import streamlit.components.v1 as components
 
-st.markdown("""
-    <div id="live-clock" style="font-size: 20px; font-weight: bold;"></div>
+clock_html = """
+<div id="live-clock" style="font-size: 20px; font-weight: bold;"></div>
 
-    <script>
-    function updateClock() {
-        const now = new Date();
+<script>
+function updateClock() {
+    const now = new Date();
 
-        const months = [
-            "January", "February", "March", "April", "May", "June",
-            "July", "August", "September", "October", "November", "December"
-        ];
+    const months = [
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    ];
 
-        const month = months[now.getMonth()];
-        const day = now.getDate();
-        const year = now.getFullYear();
+    const month = months[now.getMonth()];
+    const day = now.getDate();
+    const year = now.getFullYear();
 
-        let hours = now.getHours();
-        const ampm = hours >= 12 ? "PM" : "AM";
-        hours = hours % 12;
-        hours = hours ? hours : 12;
+    let hours = now.getHours();
+    const ampm = hours >= 12 ? "PM" : "AM";
+    hours = hours % 12;
+    hours = hours ? hours : 12;
 
-        const minutes = now.getMinutes().toString().padStart(2, '0');
-        const seconds = now.getSeconds().toString().padStart(2, '0');
+    const minutes = now.getMinutes().toString().padStart(2, '0');
+    const seconds = now.getSeconds().toString().padStart(2, '0');
 
-        const timeString = `${month} ${day}, ${year}  ${hours}:${minutes}:${seconds} ${ampm}`;
+    const timeString = `${month} ${day}, ${year}  ${hours}:${minutes}:${seconds} ${ampm}`;
 
-        document.getElementById('live-clock').textContent = timeString;
-    }
+    document.getElementById('live-clock').textContent = timeString;
+}
 
-    updateClock();
-    setInterval(updateClock, 1000);
-    </script>
-""", unsafe_allow_html=True)
+updateClock();
+setInterval(updateClock, 1000);
+</script>
+"""
+
+components.html(clock_html, height=40)
