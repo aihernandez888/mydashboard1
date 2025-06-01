@@ -3,6 +3,9 @@ import streamlit as st
 import requests
 import time
 
+st.set_page_config(layout="wide", page_title="NASA Space Image Viewer")
+
+
 # Set page config
 st.set_page_config(page_title="Claremont Dashboard", layout="wide")
 
