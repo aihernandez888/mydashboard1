@@ -56,34 +56,24 @@ st.subheader("☁️ Current Weather")
 st.write(weather)
 
 # News ticker (example: using NewsAPI)
-import requests
-
-def fetch_news_headlines():
-    url = 'https://www.thefreenewsapi.com/api/news'
-    try:
-        response = requests.get(url)
-        response.raise_for_status()
-        data = response.json()
-
-        headlines = []
-        for article in data.get('articles', [])[:10]:  # Limit to 10 headlines
-            headlines.append(article['title'])
-        
-        return headlines
-    except Exception as e:
-        return [f"Error fetching headlines: {e}"]
-
 import streamlit as st
 import time
+import feedparser
 
-# Call the news function
+def fetch_news_headlines():
+    feed_url = "https://www.reddit.com/r/news/.rss"
+    feed = feedparser.parse(feed_url)
+    headlines = [entry.title for entry in feed.entries[:10]]
+    return headlines
+
 news_headlines = fetch_news_headlines()
-
-# Ticker simulation
 ticker_text = "   |   ".join(news_headlines)
 ticker_placeholder = st.empty()
 
 while True:
     for i in range(len(ticker_text)):
-        ticker_placeholder.markdown(f"<h4 style='color:white; background-color:#111; padding:10px;'>{ticker_text[i:] + '   |   ' + ticker_text[:i]}</h4>", unsafe_allow_html=True)
+        ticker_placeholder.markdown(
+            f"<h4 style='color:white; background-color:#111; padding:10px;'>{ticker_text[i:] + '   |   ' + ticker_text[:i]}</h4>", 
+            unsafe_allow_html=True)
         time.sleep(0.1)
+
