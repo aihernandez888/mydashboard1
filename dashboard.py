@@ -99,7 +99,7 @@ if headlines:
 
     ticker_html = f"""
     <div style="position: fixed; bottom: 0; width: 100%; background: #222; overflow: hidden; white-space: nowrap; box-sizing: border-box; padding: 10px 0; z-index: 1000;">
-      <div style="display: inline-block; padding-left: 100%; animation: ticker 20s linear infinite;">
+      <div style="display: inline-block; padding-left: 100%; animation: ticker 45s linear infinite;">
         {ticker_text}
       </div>
     </div>
