@@ -6,3 +6,5 @@ requests
 feedparser
 
 streamlit-autorefresh
+
+streamlit-extras
