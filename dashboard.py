@@ -256,3 +256,16 @@ else:
 if "explanation" in apod:
     with st.expander("📖 Image Description"):
         st.markdown(apod["explanation"])
+
+st.markdown("### 🎙️ Listen to NPR Live Radio")
+
+npr_stream_url = "https://npr-ice.streamguys1.com/live.mp3"  # NPR live stream MP3 URL
+
+audio_html = f"""
+<audio controls autoplay style="width: 100%;">
+  <source src="{npr_stream_url}" type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
+"""
+
+st.markdown(audio_html, unsafe_allow_html=True)
