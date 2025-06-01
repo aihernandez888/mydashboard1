@@ -57,36 +57,22 @@ st.write(weather)
 
 # News ticker (example: using NewsAPI)
 import streamlit as st
-import time
+import requests
 import feedparser
 
 def fetch_news_headlines():
     feed_url = "https://www.reddit.com/r/news/.rss"
-    feed = feedparser.parse(feed_url)
-    headlines = [entry.title for entry in feed.entries[:10]]
-    return headlines
-
-news_headlines = fetch_news_headlines()
-ticker_text = "   |   ".join(news_headlines)
-ticker_placeholder = st.empty()
-
-while True:
-    for i in range(len(ticker_text)):
-        ticker_placeholder.markdown(
-            f"<h4 style='color:white; background-color:#111; padding:10px;'>{ticker_text[i:] + '   |   ' + ticker_text[:i]}</h4>", 
-            unsafe_allow_html=True)
-        time.sleep(0.1)
-
-import streamlit as st
-import feedparser
-
-def fetch_news_headlines():
-    feed_url = "https://www.reddit.com/r/news/.rss"
-    feed = feedparser.parse(feed_url)
-    headlines = [entry.title for entry in feed.entries[:10]]
+    headers = {'User-Agent': 'Mozilla/5.0 (compatible; MyApp/1.0)'}
+    response = requests.get(feed_url, headers=headers)
+    feed = feedparser.parse(response.content)
+    headlines = [entry.title for entry in feed.entries[:10]]  # top 10 headlines
     return headlines
 
 headlines = fetch_news_headlines()
 
-st.write("Headlines fetched:", headlines)  # <-- Add this line for debugging
+if headlines:
+    for headline in headlines:
+        st.write("- " + headline)
+else:
+    st.write("No headlines found.")
 
