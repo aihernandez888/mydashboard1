@@ -114,5 +114,49 @@ if headlines:
 
     st.markdown(ticker_html, unsafe_allow_html=True)
 
+#NASA IMAGE
+import streamlit as st
+import requests
+import random
+from datetime import datetime, timedelta
+from streamlit_extras import add_vertical_space
+
+# Title
+st.set_page_config(layout="wide", page_title="NASA Space Image Viewer")
+st.markdown("<h1 style='text-align: center;'>🚀 Random NASA Space Image</h1>", unsafe_allow_html=True)
+
+# NASA API key (demo or your own from api.nasa.gov)
+NASA_API_KEY = "DEMO_KEY"  # Replace with your own key for higher limits
+
+# Function to fetch a random APOD image from the last 10 days
+def fetch_random_apod():
+    # Pick a random date in the past 10 days
+    dates = [(datetime.now() - timedelta(days=i)).strftime('%Y-%m-%d') for i in range(10)]
+    random_date = random.choice(dates)
+
+    url = f"https://api.nasa.gov/planetary/apod?api_key={NASA_API_KEY}&date={random_date}"
+    response = requests.get(url).json()
+
+    return response
+
+# Refresh every 180,000 milliseconds (3 minutes)
+st.experimental_rerun = st.experimental_rerun if hasattr(st, "experimental_rerun") else lambda: None
+st.experimental_set_query_params(updated=str(datetime.now()))
+st_autorefresh = st.experimental_rerun
+st_autorefresh()
+
+# Display image
+apod = fetch_random_apod()
+if apod.get("media_type") == "image":
+    st.image(apod["url"], caption=apod.get("title", ""), use_column_width=True)
+else:
+    st.warning("Today’s APOD is a video or unsupported media type. Refresh for another image.")
+
+# Description
+if "explanation" in apod:
+    with st.expander("📖 Image Description"):
+        st.markdown(apod["explanation"])
+
+
 else:
     st.write("No headlines found.")
