@@ -213,55 +213,57 @@ import streamlit as st
 import requests
 import random
 
-st.title("🚀 Random Space Image")
+# Set page config
+st.set_page_config(layout="wide")
 
+# Custom CSS to position the image
+st.markdown("""
+    <style>
+    .top-right-image {
+        position: fixed;
+        top: 75px;
+        right: 20px;
+        width: 300px;
+        z-index: 9999;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        border-radius: 10px;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+# Title or intro
+st.title("🪐 Your Daily Space View")
+
+# Get top posts from r/spaceporn
 headers = {"User-agent": "Mozilla/5.0"}
 url = "https://www.reddit.com/r/spaceporn/top/.json?t=week&limit=50"
 
-res = requests.get(url, headers=headers)
-data = res.json()
+try:
+    res = requests.get(url, headers=headers, timeout=10)
+    data = res.json()
 
-# Filter out only posts with images
-image_posts = [
-    post["data"] for post in data["data"]["children"]
-    if post["data"]["post_hint"] == "image"
-]
+    # Filter for image posts only
+    image_posts = [
+        post["data"] for post in data["data"]["children"]
+        if post["data"].get("post_hint") == "image"
+    ]
 
-if image_posts:
-    post = random.choice(image_posts)
-    st.image(post["url"], caption=post["title"], use_column_width=True)
-else:
-    st.error("No image posts found. Try refreshing!")
+    if image_posts:
+        selected_post = random.choice(image_posts)
+        img_url = selected_post["url"]
+        title = selected_post["title"]
 
+        # Inject image with top-right style
+        st.markdown(f"""
+            <img src="{img_url}" class="top-right-image" title="{title}">
+        """, unsafe_allow_html=True)
 
-if apod.get("media_type") == "image":
-    nasa_img_html = f"""
-    <div style="
-        position: fixed;
-        top: 70px;
-        right: 20px;
-        width: 250px;
-        height: auto;
-        z-index: 10000;
-        border: 3px solid white;
-        border-radius: 8px;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-        background-color: #000000cc;
-        padding: 5px;
-    ">
-        <img src="{apod['url']}" alt="{apod.get('title', '')}" style="width: 100%; height: auto; border-radius: 5px;" />
-        <div style="color: white; font-size: 12px; text-align: center; margin-top: 4px;">
-            {apod.get('title', '')}
-        </div>
-    </div>
-    """
-    st.markdown(nasa_img_html, unsafe_allow_html=True)
-else:
-    st.warning("Today’s APOD is a video or unsupported media type. Refresh for another image.")
+    else:
+        st.error("No image posts found. Try refreshing the page.")
 
-if "explanation" in apod:
-    with st.expander("📖 Image Description"):
-        st.markdown(apod["explanation"])
+except Exception as e:
+    st.error("Error fetching image. Please try again later.")
+
 
 # RADIO
 
