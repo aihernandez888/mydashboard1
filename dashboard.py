@@ -255,8 +255,9 @@ st.audio(selected_station["url"], format="audio/mp3", start_time=0)
 st.markdown(
     """
     <a href="https://chat.openai.com" target="_blank" style="font-size: 40px; text-decoration:none;">
-        🔀
+        🤖
     </a>
     """,
     unsafe_allow_html=True
 )
+
