@@ -259,7 +259,7 @@ if "explanation" in apod:
 
 # RADIO
 
-st.markdown("### 🎙️ Listen to NPR Live Radio")
+st.markdown("### 🎙️ Live Radio!")
 
 npr_stream_url = "https://npr-ice.streamguys1.com/live.mp3"  # NPR live stream MP3 URL
 
