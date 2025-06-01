@@ -8,3 +8,5 @@ feedparser
 streamlit-autorefresh
 
 streamlit-extras
+
+yfinance
