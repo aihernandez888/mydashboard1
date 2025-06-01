@@ -262,32 +262,27 @@ if "explanation" in apod:
 import streamlit as st
 import random
 
-# List of radio stream URLs
-radio_stations = [
-    "https://npr-ice.streamguys1.com/live.mp3",  # Island 98.5
-    "https://www.kcrw.com/live-streams",        # KCRW 89.9 FM
-    "https://www.nts.live/",                    # NTS Radio
-    "https://www.npr.org/about-npr/472557877/npr-program-stream",  # NPR Program Stream
-    "https://tunein.com/radio/Stream-PBS-a33783/",  # PBS NewsHour
-    "https://www.wnyc.org/",                    # WNYC 93.9 FM
-    "https://somafm.com/",                      # SomaFM
-    "https://www.radioparadise.com/",           # Radio Paradise
-    "https://www.accuradio.com/",               # AccuRadio
-    "https://www.espn.com/espnradio/",           # ESPN Radio
-    "https://kspc.org/"                           # KSPC
-]
-
 st.title("🎧 Random Radio Player")
 
-if st.button("Play Random Station"):
-    chosen_station = random.choice(radio_stations)
-    st.audio(chosen_station, format="audio/mp3")
-    st.write(f"Now playing: {chosen_station}")
-else:
-    st.write("Press the button to play a random radio station.")
+# List of radio stations with name and stream URL
+radio_stations = [
+    {"name": "Island 98.5", "url": "https://ais-sa1.cdnstream1.com/1637_128.mp3"},
+    {"name": "NPR News", "url": "https://npr-ice.streamguys1.com/live.mp3"},
+    {"name": "PBS Radio (WNYC)", "url": "https://fm939.wnyc.org/wnycfm"},
+    {"name": "ESPN Radio", "url": "http://stream.espn.net:8000/espn.mp3"},
+    {"name": "Top 40 Hits", "url": "http://icecast.omroep.nl/radio538-sb-mp3"},
+    {"name": "Classic Rock", "url": "http://stream.whus.org:8000/whusfm"},
+    {"name": "Claremont College Radio (88.7 FM)", "url": "https://streaming.radionomy.com/KSPC"},
+]
 
+# Pick a random station on each run
+selected_station = random.choice(radio_stations)
 
-st.markdown(audio_html, unsafe_allow_html=True)\
+st.write(f"▶️ Now playing: **{selected_station['name']}**")
+
+# Stream audio with native player
+st.audio(selected_station["url"], format="audio/mp3", start_time=0)
+
 
 # CHATGPT
 
