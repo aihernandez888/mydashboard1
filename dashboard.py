@@ -1,15 +1,14 @@
-
 import streamlit as st
 import requests
-import time
+import feedparser
+import random
+from datetime import datetime, timedelta
+from streamlit_autorefresh import st_autorefresh
 
-st.set_page_config(layout="wide", page_title="NASA Space Image Viewer")
-
-
-# Set page config
+# === PAGE CONFIG: MUST BE FIRST COMMAND ===
 st.set_page_config(page_title="Claremont Dashboard", layout="wide")
 
-# Custom background with gradient using Streamlit markdown and HTML
+# === CSS STYLING ===
 st.markdown(
     """
     <style>
@@ -17,34 +16,44 @@ st.markdown(
         background: linear-gradient(to right, #4facfe, #00f2fe);
         color: white;
     }
-    .ticker {
+    /* News ticker styling */
+    .ticker-container {
         position: fixed;
         bottom: 0;
         width: 100%;
+        background: rgba(0, 0, 0, 0.6);
         overflow: hidden;
-        background-color: rgba(0, 0, 0, 0.6);
-        color: white;
-        font-size: 18px;
         white-space: nowrap;
-        animation: scroll-left 20s linear infinite;
+        box-sizing: border-box;
+        padding: 10px 0;
+        z-index: 1000;
+        font-size: 18px;
     }
-    @keyframes scroll-left {
-        0% { transform: translateX(100%); }
-        100% { transform: translateX(-100%); }
+    .ticker-content {
+        display: inline-block;
+        padding-left: 100%;
+        animation: ticker 45s linear infinite;
+    }
+    @keyframes ticker {
+      0% { transform: translate3d(0, 0, 0); }
+      100% { transform: translate3d(-50%, 0, 0); }
     }
     </style>
     """,
-    unsafe_allow_html=True
+    unsafe_allow_html=True,
 )
 
-# Header
+# === AUTO REFRESH ===
+# Refresh every 60 seconds for weather & news ticker
+count = st_autorefresh(interval=60000, limit=None, key="refresh_every_minute")
+
+# === HEADER ===
 st.title("🌤️ Alan's Daily Dashboard")
 st.markdown("Updated every minute • Weather • News Headlines")
 
-# Weather block (NWS API)
+# === WEATHER ===
 def get_weather_forecast():
     try:
-        # Claremont, CA lat/lon
         points_url = "https://api.weather.gov/points/34.0961,-117.7198"
         points_data = requests.get(points_url).json()
         forecast_url = points_data["properties"]["forecast"]
@@ -58,33 +67,13 @@ weather = get_weather_forecast()
 st.subheader("☁️ Current Weather")
 st.write(weather)
 
-# News ticker (example: using NewsAPI)
-import streamlit as st
-import requests
-import feedparser
-
+# === NEWS TICKER ===
 def fetch_news_headlines():
     feed_url = "https://www.reddit.com/r/space/.rss"
     headers = {'User-Agent': 'Mozilla/5.0 (compatible; MyApp/1.0)'}
     response = requests.get(feed_url, headers=headers)
     feed = feedparser.parse(response.content)
-    headlines = [entry.title for entry in feed.entries[:10]]  # top 10 headlines
-    return headlines
-
-import streamlit as st
-import requests
-import feedparser
-from streamlit_autorefresh import st_autorefresh
-
-# Auto-refresh every 60 seconds (60000 ms)
-count = st_autorefresh(interval=60000, limit=None, key="ticker_refresh")
-
-def fetch_news_headlines():
-    feed_url = "https://www.reddit.com/r/space/.rss"
-    headers = {'User-Agent': 'Mozilla/5.0 (compatible; MyApp/1.0)'}
-    response = requests.get(feed_url, headers=headers)
-    feed = feedparser.parse(response.content)
-    headlines = [entry.title for entry in feed.entries[:10]]  # top 10 headlines
+    headlines = [entry.title for entry in feed.entries if "imgur.com" not in entry.link][:10]  # filter out some non-news or images links
     return headlines
 
 headlines = fetch_news_headlines()
@@ -98,68 +87,47 @@ if headlines:
         colored_headlines.append(f'<span style="color:{color}; margin-right: 30px;">{hl}</span>')
 
     ticker_text = ''.join(colored_headlines)
-    ticker_text = ticker_text + ticker_text  # duplicate for seamless scrolling
+    ticker_text += ticker_text  # duplicate for seamless looping
 
     ticker_html = f"""
-    <div style="position: fixed; bottom: 0; width: 100%; background: #222; overflow: hidden; white-space: nowrap; box-sizing: border-box; padding: 10px 0; z-index: 1000;">
-      <div style="display: inline-block; padding-left: 100%; animation: ticker 45s linear infinite;">
+    <div class="ticker-container">
+      <div class="ticker-content">
         {ticker_text}
       </div>
     </div>
-
-    <style>
-    @keyframes ticker {{
-      0% {{ transform: translate3d(0, 0, 0); }}
-      100% {{ transform: translate3d(-50%, 0, 0); }}
-    }}
-    </style>
     """
 
     st.markdown(ticker_html, unsafe_allow_html=True)
 
-#NASA IMAGE
-import streamlit as st
-import requests
-import random
-from datetime import datetime, timedelta
-from streamlit_extras import add_vertical_space
+else:
+    st.write("No headlines found.")
 
-# Title
-st.set_page_config(layout="wide", page_title="NASA Space Image Viewer")
-st.markdown("<h1 style='text-align: center;'>🚀 Random NASA Space Image</h1>", unsafe_allow_html=True)
+# === NASA RANDOM SPACE IMAGE (APOD) ===
+# Refresh every 3 minutes (180000 ms)
+if count % 3 == 0:
+    st.session_state['apod'] = None  # force refresh every 3 mins
 
-# NASA API key (demo or your own from api.nasa.gov)
-NASA_API_KEY = "DEMO_KEY"  # Replace with your own key for higher limits
+NASA_API_KEY = "DEMO_KEY"  # Replace with your NASA API key for higher limits
 
-# Function to fetch a random APOD image from the last 10 days
 def fetch_random_apod():
-    # Pick a random date in the past 10 days
     dates = [(datetime.now() - timedelta(days=i)).strftime('%Y-%m-%d') for i in range(10)]
     random_date = random.choice(dates)
-
     url = f"https://api.nasa.gov/planetary/apod?api_key={NASA_API_KEY}&date={random_date}"
     response = requests.get(url).json()
-
     return response
 
-# Refresh every 180,000 milliseconds (3 minutes)
-st.experimental_rerun = st.experimental_rerun if hasattr(st, "experimental_rerun") else lambda: None
-st.experimental_set_query_params(updated=str(datetime.now()))
-st_autorefresh = st.experimental_rerun
-st_autorefresh()
+if 'apod' not in st.session_state or st.session_state['apod'] is None:
+    st.session_state['apod'] = fetch_random_apod()
 
-# Display image
-apod = fetch_random_apod()
+apod = st.session_state['apod']
+
+st.markdown("<h2 style='text-align:center;'>🚀 Random NASA Space Image</h2>", unsafe_allow_html=True)
+
 if apod.get("media_type") == "image":
     st.image(apod["url"], caption=apod.get("title", ""), use_column_width=True)
 else:
-    st.warning("Today’s APOD is a video or unsupported media type. Refresh for another image.")
+    st.warning("Today's APOD is a video or unsupported media type. Refresh the page to see another image.")
 
-# Description
 if "explanation" in apod:
     with st.expander("📖 Image Description"):
         st.markdown(apod["explanation"])
-
-
-else:
-    st.write("No headlines found.")
