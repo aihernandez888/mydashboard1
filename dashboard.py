@@ -209,24 +209,30 @@ else:
 
 # === NASA RANDOM SPACE IMAGE (APOD) ===
 # Refresh every 3 minutes (180000 ms)
-if count % 3 == 0:
-    st.session_state['apod'] = None  # force refresh every 3 mins
+import streamlit as st
+import requests
+import random
 
-NASA_API_KEY = "DEMO_KEY"  # Replace with your NASA API key for higher limits
+st.title("🚀 Random Space Image")
 
-def fetch_random_apod():
-    dates = [(datetime.now() - timedelta(days=i)).strftime('%Y-%m-%d') for i in range(10)]
-    random_date = random.choice(dates)
-    url = f"https://api.nasa.gov/planetary/apod?api_key={NASA_API_KEY}&date={random_date}"
-    response = requests.get(url).json()
-    return response
+headers = {"User-agent": "Mozilla/5.0"}
+url = "https://www.reddit.com/r/spaceporn/top/.json?t=week&limit=50"
 
-if 'apod' not in st.session_state or st.session_state['apod'] is None:
-    st.session_state['apod'] = fetch_random_apod()
+res = requests.get(url, headers=headers)
+data = res.json()
 
-apod = st.session_state['apod']
+# Filter out only posts with images
+image_posts = [
+    post["data"] for post in data["data"]["children"]
+    if post["data"]["post_hint"] == "image"
+]
 
-st.markdown("<h2 style='text-align:center;'>🚀 Random NASA Space Image</h2>", unsafe_allow_html=True)
+if image_posts:
+    post = random.choice(image_posts)
+    st.image(post["url"], caption=post["title"], use_column_width=True)
+else:
+    st.error("No image posts found. Try refreshing!")
+
 
 if apod.get("media_type") == "image":
     nasa_img_html = f"""
