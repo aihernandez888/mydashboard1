@@ -127,7 +127,7 @@ if apod.get("media_type") == "image":
     nasa_img_html = f"""
     <div style="
         position: fixed;
-        top: 25px;
+        top: 50px;
         right: 20px;
         width: 250px;
         height: auto;
