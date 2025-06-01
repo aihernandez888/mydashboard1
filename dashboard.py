@@ -76,3 +76,22 @@ if headlines:
 else:
     st.write("No headlines found.")
 
+ # HTML + CSS for scrolling ticker
+    ticker_html = f"""
+    <div style="position: fixed; bottom: 0; width: 100%; background: #222; color: white; overflow: hidden; white-space: nowrap; box-sizing: border-box; padding: 10px 0;">
+      <div style="display: inline-block; padding-left: 100%; animation: ticker 20s linear infinite;">
+        {ticker_text}
+      </div>
+    </div>
+
+    <style>
+    @keyframes ticker {{
+      0% {{ transform: translate3d(0, 0, 0); }}
+      100% {{ transform: translate3d(-100%, 0, 0); }}
+    }}
+    </style>
+    """
+
+    st.markdown(ticker_html, unsafe_allow_html=True)
+else:
+    st.write("No headlines found.")
