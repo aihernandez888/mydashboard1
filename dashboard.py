@@ -279,6 +279,13 @@ st.write(f"▶️ Now playing: **{selected_station['name']}**")
 # Stream audio with native player
 st.audio(selected_station["url"], format="audio/mp3", start_time=0)
 
+# Shuffle button with only the emoji
+if st.button("🔀"):
+    new_choice = random.choice(list(radio_stations.keys()))
+    while new_choice == st.session_state.station_name:
+        new_choice = random.choice(list(radio_stations.keys()))
+    st.session_state.station_name = new_choice
+
 
 # CHATGPT
 
