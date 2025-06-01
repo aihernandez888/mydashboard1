@@ -76,14 +76,46 @@ if headlines:
 else:
     st.write("No headlines found.")
 
+import streamlit as st
+import requests
+import feedparser
+
+# Auto-refresh every 60 seconds (60000 ms)
+st.experimental_set_query_params()  # clears URL params so refresh triggers properly
+st_autorefresh = st.experimental_rerun
+
+# You can use st_autorefresh for timed reruns — here’s how:
+from streamlit_autorefresh import st_autorefresh
+
+# Refresh every 60 seconds (60000 ms)
+count = st_autorefresh(interval=60000, limit=None, key="ticker_refresh")
+
+def fetch_news_headlines():
+    feed_url = "https://www.reddit.com/r/science/.rss"
+    headers = {'User-Agent': 'Mozilla/5.0 (compatible; MyApp/1.0)'}
+    response = requests.get(feed_url, headers=headers)
+    feed = feedparser.parse(response.content)
+    headlines = [entry.title for entry in feed.entries[:10]]  # top 10 headlines
+    return headlines
+
 headlines = fetch_news_headlines()
 
 if headlines:
-    ticker_text = "  ⚫  ".join(headlines)  # separator between headlines
+    colors = ["#FF6347", "#4CAF50", "#2196F3", "#FFD700"]  # cycle of colors
+
+    # Wrap each headline in a colored span
+    colored_headlines = []
+    for i, hl in enumerate(headlines):
+        color = colors[i % len(colors)]
+        colored_headlines.append(f'<span style="color:{color}; margin-right: 30px;">{hl}</span>')
+
+    ticker_text = ''.join(colored_headlines)
+    # Duplicate ticker text to make seamless loop
+    ticker_text = ticker_text + ticker_text
 
     ticker_html = f"""
-    <div style="position: fixed; bottom: 0; width: 100%; background: #222; color: white; overflow: hidden; white-space: nowrap; box-sizing: border-box; padding: 10px 0;">
-      <div style="display: inline-block; padding-left: 100%; animation: ticker 40s linear infinite;">
+    <div style="position: fixed; bottom: 0; width: 100%; background: #222; overflow: hidden; white-space: nowrap; box-sizing: border-box; padding: 10px 0; z-index: 1000;">
+      <div style="display: inline-block; padding-left: 100%; animation: ticker 20s linear infinite;">
         {ticker_text}
       </div>
     </div>
@@ -91,12 +123,13 @@ if headlines:
     <style>
     @keyframes ticker {{
       0% {{ transform: translate3d(0, 0, 0); }}
-      100% {{ transform: translate3d(-100%, 0, 0); }}
+      100% {{ transform: translate3d(-50%, 0, 0); }}
     }}
     </style>
     """
 
     st.markdown(ticker_html, unsafe_allow_html=True)
+
 else:
     st.write("No headlines found.")
 
