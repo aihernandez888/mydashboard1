@@ -257,6 +257,8 @@ if "explanation" in apod:
     with st.expander("📖 Image Description"):
         st.markdown(apod["explanation"])
 
+# RADIO
+
 st.markdown("### 🎙️ Listen to NPR Live Radio")
 
 npr_stream_url = "https://npr-ice.streamguys1.com/live.mp3"  # NPR live stream MP3 URL
@@ -268,4 +270,16 @@ audio_html = f"""
 </audio>
 """
 
-st.markdown(audio_html, unsafe_allow_html=True)
+st.markdown(audio_html, unsafe_allow_html=True)\
+
+# CHATGPT
+
+st.markdown(
+    """
+    <a href="https://chat.openai.com" target="_blank" style="font-size: 40px; text-decoration:none;">
+        🤖
+    </a>
+    """,
+    unsafe_allow_html=True
+)
+
