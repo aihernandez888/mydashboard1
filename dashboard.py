@@ -67,6 +67,61 @@ weather = get_weather_forecast()
 st.subheader("☁️ Current Weather")
 st.write(weather)
 
+import requests
+from datetime import datetime, time
+import pytz
+
+def get_hourly_forecast():
+    try:
+        # Claremont, CA lat/lon
+        points_url = "https://api.weather.gov/points/34.0961,-117.7198"
+        points_data = requests.get(points_url).json()
+        hourly_url = points_data["properties"]["forecastHourly"]
+        hourly_data = requests.get(hourly_url).json()
+        periods = hourly_data["properties"]["periods"]
+
+        # Timezone for Claremont, CA
+        tz = pytz.timezone("America/Los_Angeles")
+        today = datetime.now(tz).date()
+
+        # Emoji mapping based on forecast keywords
+        def get_emoji(forecast):
+            forecast = forecast.lower()
+            if "sunny" in forecast or "clear" in forecast:
+                return "☀️"
+            elif "cloud" in forecast:
+                return "☁️"
+            elif "rain" in forecast or "showers" in forecast:
+                return "🌧️"
+            elif "storm" in forecast or "thunder" in forecast:
+                return "⛈️"
+            elif "snow" in forecast:
+                return "❄️"
+            elif "wind" in forecast or "breezy" in forecast:
+                return "🌬️"
+            else:
+                return "🌡️"  # default
+
+        hourly_strings = []
+        for period in periods:
+            start_time_utc = datetime.fromisoformat(period["startTime"].replace("Z", "+00:00"))
+            start_time_local = start_time_utc.astimezone(tz)
+
+            # Filter hours between 8am and 8pm today
+            if start_time_local.date() == today and time(8, 0) <= start_time_local.time() <= time(20, 0):
+                hour_str = start_time_local.strftime("%-I %p")
+                temp = period["temperature"]
+                unit = period["temperatureUnit"]
+                short_forecast = period["shortForecast"]
+                emoji = get_emoji(short_forecast)
+                
+                hourly_strings.append(f"{hour_str}: {temp}°{unit} {emoji}")
+
+        return " | ".join(hourly_strings)
+
+    except Exception as e:
+        return f"Error getting hourly forecast: {e}"
+
 # === NEWS TICKER ===
 def fetch_news_headlines():
     feed_url = "https://www.reddit.com/r/space/.rss"
@@ -75,6 +130,41 @@ def fetch_news_headlines():
     feed = feedparser.parse(response.content)
     headlines = [entry.title for entry in feed.entries if "imgur.com" not in entry.link][:10]  # filter out some non-news or images links
     return headlines
+
+# Then inside your main ticker code block, after fetching headlines:
+
+hourly_forecast = get_hourly_forecast()
+
+if headlines:
+    colors = ["#FF6347", "#4CAF50", "#2196F3", "#FFD700"]  # cycle of colors
+
+    colored_headlines = []
+    for i, hl in enumerate(headlines):
+        color = colors[i % len(colors)]
+        colored_headlines.append(f'<span style="color:{color}; margin-right: 30px;">{hl}</span>')
+
+    ticker_text = ''.join(colored_headlines)
+    ticker_text = ticker_text + ticker_text  # duplicate for seamless scrolling
+
+    # Prepend hourly forecast with sun/cloud emoji etc.
+    ticker_text = f"<b>Hourly Weather:</b> {hourly_forecast} | " + ticker_text
+
+    ticker_html = f"""
+    <div style="position: fixed; bottom: 0; width: 100%; background: #222; overflow: hidden; white-space: nowrap; box-sizing: border-box; padding: 10px 0; z-index: 1000;">
+      <div style="display: inline-block; padding-left: 100%; animation: ticker 45s linear infinite;">
+        {ticker_text}
+      </div>
+    </div>
+
+    <style>
+    @keyframes ticker {{
+      0% {{ transform: translate3d(0, 0, 0); }}
+      100% {{ transform: translate3d(-50%, 0, 0); }}
+    }}
+    </style>
+    """
+
+    st.markdown(ticker_html, unsafe_allow_html=True)
 
 headlines = fetch_news_headlines()
 
