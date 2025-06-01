@@ -77,3 +77,16 @@ while True:
             unsafe_allow_html=True)
         time.sleep(0.1)
 
+import streamlit as st
+import feedparser
+
+def fetch_news_headlines():
+    feed_url = "https://www.reddit.com/r/news/.rss"
+    feed = feedparser.parse(feed_url)
+    headlines = [entry.title for entry in feed.entries[:10]]
+    return headlines
+
+headlines = fetch_news_headlines()
+
+st.write("Headlines fetched:", headlines)  # <-- Add this line for debugging
+
