@@ -273,7 +273,6 @@ st.markdown("""
     function updateClock() {
         const now = new Date();
 
-        // Month names array
         const months = [
             "January", "February", "March", "April", "May", "June",
             "July", "August", "September", "October", "November", "December"
@@ -283,13 +282,11 @@ st.markdown("""
         const day = now.getDate();
         const year = now.getFullYear();
 
-        // 12-hour format calculation
         let hours = now.getHours();
         const ampm = hours >= 12 ? "PM" : "AM";
         hours = hours % 12;
-        hours = hours ? hours : 12; // the hour '0' should be '12'
+        hours = hours ? hours : 12;
 
-        // Minutes and seconds with leading zeros
         const minutes = now.getMinutes().toString().padStart(2, '0');
         const seconds = now.getSeconds().toString().padStart(2, '0');
 
@@ -298,11 +295,7 @@ st.markdown("""
         document.getElementById('live-clock').textContent = timeString;
     }
 
-    // Initial call
     updateClock();
-
-    // Update every second
     setInterval(updateClock, 1000);
     </script>
 """, unsafe_allow_html=True)
-
