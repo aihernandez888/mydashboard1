@@ -2,7 +2,7 @@ import streamlit as st
 import requests
 import feedparser
 import random
-from datetime import datetime, timedelta, time
+from datetime import datetime, time
 import pytz
 from streamlit_autorefresh import st_autorefresh
 import yfinance as yf
@@ -40,6 +40,17 @@ st.markdown(
       0% { transform: translate3d(0, 0, 0); }
       100% { transform: translate3d(-50%, 0, 0); }
     }
+
+    /* Top right image styling */
+    .top-right-image {
+        position: fixed;
+        top: 75px;
+        right: 20px;
+        width: 300px;
+        z-index: 9999;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        border-radius: 10px;
+    }
     </style>
     """,
     unsafe_allow_html=True,
@@ -67,18 +78,15 @@ def get_weather_forecast():
 
 def get_hourly_forecast():
     try:
-        # Claremont, CA lat/lon
         points_url = "https://api.weather.gov/points/34.0961,-117.7198"
         points_data = requests.get(points_url).json()
         hourly_url = points_data["properties"]["forecastHourly"]
         hourly_data = requests.get(hourly_url).json()
         periods = hourly_data["properties"]["periods"]
 
-        # Timezone for Claremont, CA
         tz = pytz.timezone("America/Los_Angeles")
         today = datetime.now(tz).date()
 
-        # Emoji mapping based on forecast keywords
         def get_emoji(forecast):
             forecast = forecast.lower()
             if "sunny" in forecast or "clear" in forecast:
@@ -94,21 +102,18 @@ def get_hourly_forecast():
             elif "wind" in forecast or "breezy" in forecast:
                 return "🌬️"
             else:
-                return "🌡️"  # default
+                return "🌡️"
 
         hourly_strings = []
         for period in periods:
             start_time_utc = datetime.fromisoformat(period["startTime"].replace("Z", "+00:00"))
             start_time_local = start_time_utc.astimezone(tz)
-
-            # Filter hours between 8am and 8pm today
             if start_time_local.date() == today and time(8, 0) <= start_time_local.time() <= time(20, 0):
                 hour_str = start_time_local.strftime("%-I %p")
                 temp = period["temperature"]
                 unit = period["temperatureUnit"]
                 short_forecast = period["shortForecast"]
                 emoji = get_emoji(short_forecast)
-                
                 hourly_strings.append(f"{hour_str}: {temp}°{unit} {emoji}")
 
         return " | ".join(hourly_strings)
@@ -122,7 +127,7 @@ def get_stock_ticker_text(symbols):
     for symbol in symbols:
         try:
             stock = yf.Ticker(symbol)
-            data = stock.history(period="2d")  # last two days for % change
+            data = stock.history(period="2d")
             if data.empty or len(data) < 2:
                 continue
             latest = data.iloc[-1]
@@ -136,7 +141,7 @@ def get_stock_ticker_text(symbols):
                 color = "lightgreen"
             elif pct_change < 0:
                 emoji = "🔻"
-                color = "#ff7f7f"  # light red
+                color = "#ff7f7f"
             else:
                 emoji = "⏺️"
                 color = "white"
@@ -145,7 +150,7 @@ def get_stock_ticker_text(symbols):
             stock_html = f'<span style="color: {color}; margin-right: 20px;">{symbol}: ${price:.2f} {emoji} {pct_change_str}</span>'
             stock_texts.append(stock_html)
 
-        except Exception as e:
+        except Exception:
             stock_texts.append(f'<span style="color: white; margin-right: 20px;">{symbol}: Error</span>')
 
     return " ".join(stock_texts)
@@ -159,14 +164,13 @@ def fetch_news_headlines():
     headlines = [entry.title for entry in feed.entries if "imgur.com" not in entry.link][:10]
     return headlines
 
-# === MAIN ===
+# === DISPLAY WEATHER, STOCKS, NEWS ===
 weather = get_weather_forecast()
 st.subheader("☁️ Current Weather")
 st.write(weather)
 
 hourly_forecast = get_hourly_forecast()
 
-# List of 15 popular stock symbols
 popular_stocks = [
     "AAPL", "MSFT", "GOOGL", "AMZN", "TSLA",
     "NVDA", "META", "BRK-B", "JPM", "V",
@@ -174,21 +178,18 @@ popular_stocks = [
 ]
 
 stock_ticker = get_stock_ticker_text(popular_stocks)
-
 headlines = fetch_news_headlines()
 
 if headlines:
-    colors = ["#FF6347", "#4CAF50", "#2196F3", "#FFD700"]  # colors cycle
-
+    colors = ["#FF6347", "#4CAF50", "#2196F3", "#FFD700"]
     colored_headlines = []
     for i, hl in enumerate(headlines):
         color = colors[i % len(colors)]
         colored_headlines.append(f'<span style="color:{color}; margin-right: 30px;">{hl}</span>')
 
     ticker_text = ''.join(colored_headlines)
-    ticker_text += ticker_text  # duplicate for seamless loop
+    ticker_text += ticker_text  # duplicate for smooth ticker
 
-    # Prepend hourly forecast and stocks with bold labels and separators
     ticker_text = (
         f"<b>Hourly Weather:</b> {hourly_forecast} | "
         f"<b>Stocks:</b> {stock_ticker} | "
@@ -207,32 +208,9 @@ if headlines:
 else:
     st.write("No headlines found.")
 
-# === NASA RANDOM SPACE IMAGE (APOD) ===
-# Refresh every 3 minutes (180000 ms)
-import streamlit as st
-import requests
-import random
-
-
-# Custom CSS to position the image
-st.markdown("""
-    <style>
-    .top-right-image {
-        position: fixed;
-        top: 75px;
-        right: 20px;
-        width: 300px;
-        z-index: 9999;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        border-radius: 10px;
-    }
-    </style>
-""", unsafe_allow_html=True)
-
-# Title or intro
+# === NASA / r/spaceporn RANDOM IMAGE TOP RIGHT ===
 st.title("🪐 Your Daily Space View")
 
-# Get top posts from r/spaceporn
 headers = {"User-agent": "Mozilla/5.0"}
 url = "https://www.reddit.com/r/spaceporn/top/.json?t=week&limit=50"
 
@@ -240,7 +218,6 @@ try:
     res = requests.get(url, headers=headers, timeout=10)
     data = res.json()
 
-    # Filter for image posts only
     image_posts = [
         post["data"] for post in data["data"]["children"]
         if post["data"].get("post_hint") == "image"
@@ -251,50 +228,35 @@ try:
         img_url = selected_post["url"]
         title = selected_post["title"]
 
-        # Inject image with top-right style
         st.markdown(f"""
             <img src="{img_url}" class="top-right-image" title="{title}">
         """, unsafe_allow_html=True)
-
     else:
         st.error("No image posts found. Try refreshing the page.")
 
-except Exception as e:
+except Exception:
     st.error("Error fetching image. Please try again later.")
 
-
-# RADIO
-
-import streamlit as st
-import random
-
+# === RANDOM RADIO PLAYER ===
 st.title("🎧 Random Radio Player")
 
-# List of radio stations with name and stream URL
 radio_stations = [
     {"name": "NPR News", "url": "https://npr-ice.streamguys1.com/live.mp3"},
     {"name": "PBS Radio (WNYC)", "url": "https://fm939.wnyc.org/wnycfm"},
     {"name": "Claremont College Radio (88.7 FM)", "url": "https://streaming.radionomy.com/KSPC"},
 ]
 
-# Pick a random station on each run
 selected_station = random.choice(radio_stations)
 
 st.write(f"▶️ Now playing: **{selected_station['name']}**")
-
-# Stream audio with native player
 st.audio(selected_station["url"], format="audio/mp3", start_time=0)
 
-
-
-# CHATGPT
-
+# === CHATGPT LINK WITH SHUFFLE EMOJI ===
 st.markdown(
     """
     <a href="https://chat.openai.com" target="_blank" style="font-size: 40px; text-decoration:none;">
-        🤖
+        🔀
     </a>
     """,
     unsafe_allow_html=True
 )
-
