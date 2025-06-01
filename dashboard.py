@@ -35,7 +35,7 @@ st.markdown(
 )
 
 # Header
-st.title("🌤️ Claremont, CA Daily Dashboard")
+st.title("🌤️ Alan's Daily Dashboard")
 st.markdown("Updated every minute • Weather • News Headlines")
 
 # Weather block (NWS API)
