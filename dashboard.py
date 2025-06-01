@@ -210,33 +210,33 @@ else:
     st.write("No headlines found.")
 
 # === NASA / r/spaceporn RANDOM IMAGE TOP RIGHT ===
-st.title("🪐 Your Daily Space View")
+#st.title("🪐 Your Daily Space View")
 
-headers = {"User-agent": "Mozilla/5.0"}
-url = "https://www.reddit.com/r/spaceporn/top/.json?t=week&limit=50"
+#headers = {"User-agent": "Mozilla/5.0"}
+#url = "https://www.reddit.com/r/spaceporn/top/.json?t=week&limit=50"
 
-try:
-    res = requests.get(url, headers=headers, timeout=10)
-    data = res.json()
+#try:
+#    res = requests.get(url, headers=headers, timeout=10)
+#    data = res.json()
 
-    image_posts = [
-        post["data"] for post in data["data"]["children"]
-        if post["data"].get("post_hint") == "image"
-    ]
+ #   image_posts = [
+ #       post["data"] for post in data["data"]["children"]
+ #       if post["data"].get("post_hint") == "image"
+ #   ]
 
-    if image_posts:
-        selected_post = random.choice(image_posts)
-        img_url = selected_post["url"]
-        title = selected_post["title"]
+ #   if image_posts:
+  #      selected_post = random.choice(image_posts)
+  #      img_url = selected_post["url"]
+  #      title = selected_post["title"]
 
-        st.markdown(f"""
-            <img src="{img_url}" class="top-right-image" title="{title}">
-        """, unsafe_allow_html=True)
-    else:
-        st.error("No image posts found. Try refreshing the page.")
+   #     st.markdown(f"""
+   #         <img src="{img_url}" class="top-right-image" title="{title}">
+   #     """, unsafe_allow_html=True)
+   # else:
+  #      st.error("No image posts found. Try refreshing the page.")
 
-except Exception:
-    st.error("Error fetching image. Please try again later.")
+#except Exception:
+  #  st.error("Error fetching image. Please try again later.")
 
 # === RANDOM RADIO PLAYER ===
 st.title("🎧 Random Radio Player")
