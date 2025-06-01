@@ -77,7 +77,7 @@ from streamlit_autorefresh import st_autorefresh
 count = st_autorefresh(interval=60000, limit=None, key="ticker_refresh")
 
 def fetch_news_headlines():
-    feed_url = "https://www.reddit.com/r/science/.rss"
+    feed_url = "https://www.reddit.com/r/space/.rss"
     headers = {'User-Agent': 'Mozilla/5.0 (compatible; MyApp/1.0)'}
     response = requests.get(feed_url, headers=headers)
     feed = feedparser.parse(response.content)
