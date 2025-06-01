@@ -262,3 +262,47 @@ st.markdown(
     unsafe_allow_html=True
 )
 
+# Date and Time
+
+import streamlit as st
+
+st.markdown("""
+    <div id="live-clock" style="font-size: 20px; font-weight: bold;"></div>
+
+    <script>
+    function updateClock() {
+        const now = new Date();
+
+        // Month names array
+        const months = [
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        ];
+
+        const month = months[now.getMonth()];
+        const day = now.getDate();
+        const year = now.getFullYear();
+
+        // 12-hour format calculation
+        let hours = now.getHours();
+        const ampm = hours >= 12 ? "PM" : "AM";
+        hours = hours % 12;
+        hours = hours ? hours : 12; // the hour '0' should be '12'
+
+        // Minutes and seconds with leading zeros
+        const minutes = now.getMinutes().toString().padStart(2, '0');
+        const seconds = now.getSeconds().toString().padStart(2, '0');
+
+        const timeString = `${month} ${day}, ${year}  ${hours}:${minutes}:${seconds} ${ampm}`;
+
+        document.getElementById('live-clock').textContent = timeString;
+    }
+
+    // Initial call
+    updateClock();
+
+    // Update every second
+    setInterval(updateClock, 1000);
+    </script>
+""", unsafe_allow_html=True)
+
