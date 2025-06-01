@@ -124,9 +124,29 @@ apod = st.session_state['apod']
 st.markdown("<h2 style='text-align:center;'>🚀 Random NASA Space Image</h2>", unsafe_allow_html=True)
 
 if apod.get("media_type") == "image":
-    st.image(apod["url"], caption=apod.get("title", ""), use_container_width=True)
+    nasa_img_html = f"""
+    <div style="
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 250px;
+        height: auto;
+        z-index: 10000;
+        border: 3px solid white;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        background-color: #000000cc;
+        padding: 5px;
+    ">
+        <img src="{apod['url']}" alt="{apod.get('title', '')}" style="width: 100%; height: auto; border-radius: 5px;" />
+        <div style="color: white; font-size: 12px; text-align: center; margin-top: 4px;">
+            {apod.get('title', '')}
+        </div>
+    </div>
+    """
+    st.markdown(nasa_img_html, unsafe_allow_html=True)
 else:
-    st.warning("Today's APOD is a video or unsupported media type. Refresh the page to see another image.")
+    st.warning("Today’s APOD is a video or unsupported media type. Refresh for another image.")
 
 if "explanation" in apod:
     with st.expander("📖 Image Description"):
