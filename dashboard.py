@@ -266,7 +266,6 @@ st.title("🎧 Random Radio Player")
 
 # List of radio stations with name and stream URL
 radio_stations = [
-    {"name": "Island 98.5", "url": "https://island985.iheart.com/"},
     {"name": "NPR News", "url": "https://npr-ice.streamguys1.com/live.mp3"},
     {"name": "PBS Radio (WNYC)", "url": "https://fm939.wnyc.org/wnycfm"},
     {"name": "Claremont College Radio (88.7 FM)", "url": "https://streaming.radionomy.com/KSPC"},
