@@ -2,8 +2,10 @@ import streamlit as st
 import requests
 import feedparser
 import random
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, time
+import pytz
 from streamlit_autorefresh import st_autorefresh
+import yfinance as yf
 
 # === PAGE CONFIG: MUST BE FIRST COMMAND ===
 st.set_page_config(page_title="Claremont Dashboard", layout="wide")
@@ -51,7 +53,7 @@ count = st_autorefresh(interval=60000, limit=None, key="refresh_every_minute")
 st.title("🌤️ Alan's Daily Dashboard")
 st.markdown("Updated every minute • Weather • News Headlines")
 
-# === WEATHER ===
+# === WEATHER FUNCTIONS ===
 def get_weather_forecast():
     try:
         points_url = "https://api.weather.gov/points/34.0961,-117.7198"
@@ -62,14 +64,6 @@ def get_weather_forecast():
         return f"{current_forecast['name']}: {current_forecast['temperature']}°{current_forecast['temperatureUnit']} - {current_forecast['shortForecast']}"
     except Exception as e:
         return f"Error getting weather: {e}"
-
-weather = get_weather_forecast()
-st.subheader("☁️ Current Weather")
-st.write(weather)
-
-import requests
-from datetime import datetime, time
-import pytz
 
 def get_hourly_forecast():
     try:
@@ -122,8 +116,41 @@ def get_hourly_forecast():
     except Exception as e:
         return f"Error getting hourly forecast: {e}"
 
-# === NEWS TICKER ===
-# === NEWS TICKER ===
+# === STOCKS FUNCTION ===
+def get_stock_ticker_text(symbols):
+    stock_texts = []
+    for symbol in symbols:
+        try:
+            stock = yf.Ticker(symbol)
+            data = stock.history(period="2d")  # last two days for % change
+            if data.empty or len(data) < 2:
+                continue
+            latest = data.iloc[-1]
+            prev = data.iloc[-2]
+            price = latest['Close']
+            prev_close = prev['Close']
+            pct_change = (price - prev_close) / prev_close * 100
+
+            if pct_change > 0:
+                emoji = "🔺"
+                color = "lightgreen"
+            elif pct_change < 0:
+                emoji = "🔻"
+                color = "#ff7f7f"  # light red
+            else:
+                emoji = "⏺️"
+                color = "white"
+
+            pct_change_str = f"{pct_change:+.2f}%"
+            stock_html = f'<span style="color: {color}; margin-right: 20px;">{symbol}: ${price:.2f} {emoji} {pct_change_str}</span>'
+            stock_texts.append(stock_html)
+
+        except Exception as e:
+            stock_texts.append(f'<span style="color: white; margin-right: 20px;">{symbol}: Error</span>')
+
+    return " ".join(stock_texts)
+
+# === NEWS TICKER FUNCTION ===
 def fetch_news_headlines():
     feed_url = "https://www.reddit.com/r/space/.rss"
     headers = {'User-Agent': 'Mozilla/5.0 (compatible; MyApp/1.0)'}
@@ -132,9 +159,23 @@ def fetch_news_headlines():
     headlines = [entry.title for entry in feed.entries if "imgur.com" not in entry.link][:10]
     return headlines
 
-headlines = fetch_news_headlines()  # Fetch headlines FIRST
+# === MAIN ===
+weather = get_weather_forecast()
+st.subheader("☁️ Current Weather")
+st.write(weather)
 
-hourly_forecast = get_hourly_forecast()  # Get hourly forecast string with emojis
+hourly_forecast = get_hourly_forecast()
+
+# List of 15 popular stock symbols
+popular_stocks = [
+    "AAPL", "MSFT", "GOOGL", "AMZN", "TSLA",
+    "NVDA", "META", "BRK-B", "JPM", "V",
+    "UNH", "HD", "PG", "MA", "DIS"
+]
+
+stock_ticker = get_stock_ticker_text(popular_stocks)
+
+headlines = fetch_news_headlines()
 
 if headlines:
     colors = ["#FF6347", "#4CAF50", "#2196F3", "#FFD700"]  # colors cycle
@@ -147,8 +188,12 @@ if headlines:
     ticker_text = ''.join(colored_headlines)
     ticker_text += ticker_text  # duplicate for seamless loop
 
-    # Prepend hourly forecast with bold label
-    ticker_text = f"<b>Hourly Weather:</b> {hourly_forecast} | " + ticker_text
+    # Prepend hourly forecast and stocks with bold labels and separators
+    ticker_text = (
+        f"<b>Hourly Weather:</b> {hourly_forecast} | "
+        f"<b>Stocks:</b> {stock_ticker} | "
+        + ticker_text
+    )
 
     ticker_html = f"""
     <div class="ticker-container">
@@ -161,7 +206,6 @@ if headlines:
     st.markdown(ticker_html, unsafe_allow_html=True)
 else:
     st.write("No headlines found.")
-
 
 # === NASA RANDOM SPACE IMAGE (APOD) ===
 # Refresh every 3 minutes (180000 ms)
