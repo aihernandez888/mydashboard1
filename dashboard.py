@@ -259,16 +259,33 @@ if "explanation" in apod:
 
 # RADIO
 
-st.markdown("### 🎙️ Live Radio!")
+import streamlit as st
+import random
 
-npr_stream_url = "https://npr-ice.streamguys1.com/live.mp3"  # NPR live stream MP3 URL
+# List of radio stream URLs
+radio_stations = [
+    "https://npr-ice.streamguys1.com/live.mp3",  # Island 98.5
+    "https://www.kcrw.com/live-streams",        # KCRW 89.9 FM
+    "https://www.nts.live/",                    # NTS Radio
+    "https://www.npr.org/about-npr/472557877/npr-program-stream",  # NPR Program Stream
+    "https://tunein.com/radio/Stream-PBS-a33783/",  # PBS NewsHour
+    "https://www.wnyc.org/",                    # WNYC 93.9 FM
+    "https://somafm.com/",                      # SomaFM
+    "https://www.radioparadise.com/",           # Radio Paradise
+    "https://www.accuradio.com/",               # AccuRadio
+    "https://www.espn.com/espnradio/",           # ESPN Radio
+    "https://kspc.org/"                           # KSPC
+]
 
-audio_html = f"""
-<audio controls autoplay style="width: 100%;">
-  <source src="{npr_stream_url}" type="audio/mpeg">
-  Your browser does not support the audio element.
-</audio>
-"""
+st.title("🎧 Random Radio Player")
+
+if st.button("Play Random Station"):
+    chosen_station = random.choice(radio_stations)
+    st.audio(chosen_station, format="audio/mp3")
+    st.write(f"Now playing: {chosen_station}")
+else:
+    st.write("Press the button to play a random radio station.")
+
 
 st.markdown(audio_html, unsafe_allow_html=True)\
 
