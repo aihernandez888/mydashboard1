@@ -213,8 +213,6 @@ import streamlit as st
 import requests
 import random
 
-# Set page config
-st.set_page_config(layout="wide")
 
 # Custom CSS to position the image
 st.markdown("""
