@@ -123,20 +123,21 @@ def get_hourly_forecast():
         return f"Error getting hourly forecast: {e}"
 
 # === NEWS TICKER ===
+# === NEWS TICKER ===
 def fetch_news_headlines():
     feed_url = "https://www.reddit.com/r/space/.rss"
     headers = {'User-Agent': 'Mozilla/5.0 (compatible; MyApp/1.0)'}
     response = requests.get(feed_url, headers=headers)
     feed = feedparser.parse(response.content)
-    headlines = [entry.title for entry in feed.entries if "imgur.com" not in entry.link][:10]  # filter out some non-news or images links
+    headlines = [entry.title for entry in feed.entries if "imgur.com" not in entry.link][:10]
     return headlines
 
-# Then inside your main ticker code block, after fetching headlines:
+headlines = fetch_news_headlines()  # Fetch headlines FIRST
 
-hourly_forecast = get_hourly_forecast()
+hourly_forecast = get_hourly_forecast()  # Get hourly forecast string with emojis
 
 if headlines:
-    colors = ["#FF6347", "#4CAF50", "#2196F3", "#FFD700"]  # cycle of colors
+    colors = ["#FF6347", "#4CAF50", "#2196F3", "#FFD700"]  # colors cycle
 
     colored_headlines = []
     for i, hl in enumerate(headlines):
@@ -144,40 +145,10 @@ if headlines:
         colored_headlines.append(f'<span style="color:{color}; margin-right: 30px;">{hl}</span>')
 
     ticker_text = ''.join(colored_headlines)
-    ticker_text = ticker_text + ticker_text  # duplicate for seamless scrolling
+    ticker_text += ticker_text  # duplicate for seamless loop
 
-    # Prepend hourly forecast with sun/cloud emoji etc.
+    # Prepend hourly forecast with bold label
     ticker_text = f"<b>Hourly Weather:</b> {hourly_forecast} | " + ticker_text
-
-    ticker_html = f"""
-    <div style="position: fixed; bottom: 0; width: 100%; background: #222; overflow: hidden; white-space: nowrap; box-sizing: border-box; padding: 10px 0; z-index: 1000;">
-      <div style="display: inline-block; padding-left: 100%; animation: ticker 45s linear infinite;">
-        {ticker_text}
-      </div>
-    </div>
-
-    <style>
-    @keyframes ticker {{
-      0% {{ transform: translate3d(0, 0, 0); }}
-      100% {{ transform: translate3d(-50%, 0, 0); }}
-    }}
-    </style>
-    """
-
-    st.markdown(ticker_html, unsafe_allow_html=True)
-
-headlines = fetch_news_headlines()
-
-if headlines:
-    colors = ["#FF6347", "#4CAF50", "#2196F3", "#FFD700"]  # cycle of colors
-
-    colored_headlines = []
-    for i, hl in enumerate(headlines):
-        color = colors[i % len(colors)]
-        colored_headlines.append(f'<span style="color:{color}; margin-right: 30px;">{hl}</span>')
-
-    ticker_text = ''.join(colored_headlines)
-    ticker_text += ticker_text  # duplicate for seamless looping
 
     ticker_html = f"""
     <div class="ticker-container">
@@ -188,9 +159,9 @@ if headlines:
     """
 
     st.markdown(ticker_html, unsafe_allow_html=True)
-
 else:
     st.write("No headlines found.")
+
 
 # === NASA RANDOM SPACE IMAGE (APOD) ===
 # Refresh every 3 minutes (180000 ms)
