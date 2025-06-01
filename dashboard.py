@@ -266,12 +266,9 @@ st.title("🎧 Random Radio Player")
 
 # List of radio stations with name and stream URL
 radio_stations = [
-    {"name": "Island 98.5", "url": "https://ais-sa1.cdnstream1.com/1637_128.mp3"},
+    {"name": "Island 98.5", "url": "https://island985.iheart.com/"},
     {"name": "NPR News", "url": "https://npr-ice.streamguys1.com/live.mp3"},
     {"name": "PBS Radio (WNYC)", "url": "https://fm939.wnyc.org/wnycfm"},
-    {"name": "ESPN Radio", "url": "http://stream.espn.net:8000/espn.mp3"},
-    {"name": "Top 40 Hits", "url": "http://icecast.omroep.nl/radio538-sb-mp3"},
-    {"name": "Classic Rock", "url": "http://stream.whus.org:8000/whusfm"},
     {"name": "Claremont College Radio (88.7 FM)", "url": "https://streaming.radionomy.com/KSPC"},
 ]
 
