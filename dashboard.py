@@ -311,15 +311,7 @@ import random
 # List of Bob Ross video IDs
 bob_ross_videos = [
     "oh5p5f5_-7A",
-    "1AIeDl5sHVI",
-    "Lel6x5V_T6g",
-    "jajcg59aKZw",
-    "TdphtMWjies",
-    "Z2F2TcEM4v0",
-    "YLO7tCdBVrA",
-    "9cL2OHU85no",
-    "hYw2I2YJz2k",
-    "iVgNe-8a_RI"
+    "Xzv3iiWi1Wo"
 ]
 
 # Pick a random video
