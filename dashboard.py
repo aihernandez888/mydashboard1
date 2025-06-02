@@ -558,17 +558,31 @@ import streamlit.components.v1 as components
 
 components.html(
     """
-    <div style="text-align: center; font-family: Arial, sans-serif; color: white;">
+    <div style="text-align: center; font-family: 'VT323', monospace; color: white;">
         <h2>Pomodoro Timer</h2>
-        <div id="timer" style="font-size: 48px; margin: 20px;">25:00</div>
-        <button onclick="startTimer()" style="margin-right: 10px;">Start</button>
-        <button onclick="resetTimer()">Reset</button>
+        <div id="timer" style="
+            font-size: 60px;
+            color: #ff3c3c;
+            background-color: #111;
+            border: 4px solid #444;
+            border-radius: 12px;
+            padding: 20px 40px;
+            width: fit-content;
+            margin: 20px auto;
+            box-shadow: 0 0 20px #ff3c3c;
+        ">25:00</div>
+        <div>
+            <button onclick="startTimer()" style="padding: 10px 20px; margin: 5px; border-radius: 5px;">Start</button>
+            <button onclick="pauseTimer()" style="padding: 10px 20px; margin: 5px; border-radius: 5px;">Pause</button>
+            <button onclick="resetTimer()" style="padding: 10px 20px; margin: 5px; border-radius: 5px;">Reset</button>
+        </div>
     </div>
 
     <script>
         let duration = 25 * 60;
         let remaining = duration;
         let timerInterval;
+        let isPaused = false;
 
         function updateDisplay() {
             let minutes = Math.floor(remaining / 60);
@@ -580,15 +594,20 @@ components.html(
 
         function startTimer() {
             clearInterval(timerInterval);
+            isPaused = false;
             timerInterval = setInterval(() => {
-                if (remaining > 0) {
+                if (remaining > 0 && !isPaused) {
                     remaining--;
                     updateDisplay();
-                } else {
+                } else if (remaining <= 0) {
                     clearInterval(timerInterval);
                     alert("Pomodoro complete! Take a break.");
                 }
             }, 1000);
+        }
+
+        function pauseTimer() {
+            isPaused = true;
         }
 
         function resetTimer() {
@@ -600,5 +619,5 @@ components.html(
         updateDisplay();
     </script>
     """,
-    height=300,
+    height=400,
 )
