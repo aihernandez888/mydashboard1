@@ -295,14 +295,12 @@ components.html(
         }
 
         .colon {
-            animation: blink 3s infinite;
+            animation: blink 2s infinite;
         }
 
         .ampm {
-            animation: blink 3s infinite;
-            font-size: 0.75em;
-            vertical-align: super;
-            margin-left: 5px;
+            animation: blink 2s infinite;
+            
         }
 
         @keyframes blink {
