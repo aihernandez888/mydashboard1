@@ -298,7 +298,7 @@ components.html(
     updateClock();
     </script>
     """,
-    height=150,  // Increase height to fit on mobile
+    height=150,  # Increase height to fit on mobile
     scrolling=False,
 )
 
