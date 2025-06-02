@@ -252,7 +252,7 @@ selected_station = random.choice(radio_stations)
 st.write(f"▶️ Now playing: **{selected_station['name']}**")
 st.audio(selected_station["url"], format="audio/mp3", start_time=0)
 
-# === CHATGPT LINK WITH SHUFFLE EMOJI ===
+# === CHATGPT LINK WITH ROBOT EMOJI ===
 st.markdown(
     """
     <a href="https://chat.openai.com" target="_blank" style="font-size: 40px; text-decoration:none;">
@@ -270,12 +270,14 @@ import streamlit.components.v1 as components
 components.html(
     """
     <div id="clock" style="
-        font-family: 'Arial Black', Gadget, sans-serif;
-        font-size: 48px;
-        color: white;
+        font-family: 'Courier New', monospace;
+        font-size: 7vw;
+        color: red;
         font-weight: bold;
         text-align: center;
-        ">
+        letter-spacing: 2px;
+        padding: 20px 0 40px 0;
+    ">
     </div>
 
     <script>
@@ -296,9 +298,10 @@ components.html(
     updateClock();
     </script>
     """,
-    height=80,
+    height=150,  // Increase height to fit on mobile
     scrolling=False,
 )
+
 
 # Bob Ross
 
