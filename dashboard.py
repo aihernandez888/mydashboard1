@@ -551,3 +551,54 @@ components.html(
     """,
     height=400,
 )
+
+# Pomodoro Timer
+
+import streamlit.components.v1 as components
+
+components.html(
+    """
+    <div style="text-align: center; font-family: Arial, sans-serif; color: white;">
+        <h2>Pomodoro Timer</h2>
+        <div id="timer" style="font-size: 48px; margin: 20px;">25:00</div>
+        <button onclick="startTimer()" style="margin-right: 10px;">Start</button>
+        <button onclick="resetTimer()">Reset</button>
+    </div>
+
+    <script>
+        let duration = 25 * 60;
+        let remaining = duration;
+        let timerInterval;
+
+        function updateDisplay() {
+            let minutes = Math.floor(remaining / 60);
+            let seconds = remaining % 60;
+            document.getElementById("timer").textContent =
+                (minutes < 10 ? "0" : "") + minutes + ":" + 
+                (seconds < 10 ? "0" : "") + seconds;
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                if (remaining > 0) {
+                    remaining--;
+                    updateDisplay();
+                } else {
+                    clearInterval(timerInterval);
+                    alert("Pomodoro complete! Take a break.");
+                }
+            }, 1000);
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            remaining = duration;
+            updateDisplay();
+        }
+
+        updateDisplay();
+    </script>
+    """,
+    height=300,
+)
