@@ -271,35 +271,76 @@ components.html(
     """
     <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
 
-    <div id="clock" style="
-        font-family: 'VT323', monospace;
-        font-size: 60px;
-        color: red;
-        text-align: center;
-        text-shadow: 0 0 5px red, 0 0 10px red, 0 0 20px red;
-        padding: 20px;
-        ">
-    </div>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        #clock-container {
+            font-family: 'VT323', monospace;
+            font-size: 60px;
+            color: red;
+            background-color: #111;
+            text-align: center;
+            padding: 30px 10px;
+            animation: pulse 2s infinite;
+            letter-spacing: 2px;
+        }
+
+        @keyframes pulse {
+            0% { text-shadow: 0 0 5px red, 0 0 10px red, 0 0 15px red; }
+            50% { text-shadow: 0 0 10px red, 0 0 20px red, 0 0 30px red; }
+            100% { text-shadow: 0 0 5px red, 0 0 10px red, 0 0 15px red; }
+        }
+
+        .colon {
+            animation: blink 1s infinite;
+        }
+
+        .ampm {
+            animation: blink 1s infinite;
+            font-size: 0.75em;
+            vertical-align: super;
+            margin-left: 5px;
+        }
+
+        @keyframes blink {
+            0%, 49% { opacity: 1; }
+            50%, 100% { opacity: 0; }
+        }
+    </style>
+
+    <div id="clock-container"></div>
 
     <script>
-    function updateClock() {
-        const now = new Date();
-        let hours = now.getHours();
-        const minutes = now.getMinutes().toString().padStart(2, '0');
-        const seconds = now.getSeconds().toString().padStart(2, '0');
-        const ampm = hours >= 12 ? 'PM' : 'AM';
-        hours = hours % 12 || 12;  // Convert to 12-hour format
-        const date = now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-        const timeString = `${date} ${hours}:${minutes}:${seconds} ${ampm}`;
-        document.getElementById('clock').textContent = timeString;
-    }
-    setInterval(updateClock, 1000);
-    updateClock();
+        function formatTime(date) {
+            let hours = date.getHours();
+            const minutes = date.getMinutes();
+            const seconds = date.getSeconds();
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12;
+            hours = hours ? hours : 12; // the hour '0' should be '12'
+
+            const dayOptions = { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' };
+            const dayString = date.toLocaleDateString('en-US', dayOptions);
+
+            return `${dayString} <br> ${hours}<span class="colon">:</span>${String(minutes).padStart(2, '0')}<span class="colon">:</span>${String(seconds).padStart(2, '0')} <span class="ampm">${ampm}</span>`;
+        }
+
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('clock-container').innerHTML = formatTime(now);
+        }
+
+        setInterval(updateClock, 1000);
+        updateClock();
     </script>
     """,
-    height=200,
+    height=300,
     scrolling=False,
 )
+
 
 
 
