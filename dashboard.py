@@ -297,7 +297,7 @@ components.html(
     updateClock();
     </script>
     """,
-    height=150,
+    height=200,
     scrolling=False,
 )
 
