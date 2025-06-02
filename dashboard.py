@@ -376,3 +376,71 @@ video_html = f"""
 """
 
 st.markdown(video_html, unsafe_allow_html=True)
+
+#trex thing
+
+import streamlit as st
+import streamlit.components.v1 as components
+
+components.html(
+    f"""
+    <div id="overlay"></div>
+    <div id="dino" onclick="triggerDinoEffect()" style="font-size: 50px; cursor: pointer; text-align: center;">🦖</div>
+    
+    <audio id="roar" src="https://www.soundjay.com/animal/dinosaur-roar-01.mp3"></audio>
+    <audio id="stomp" src="https://www.soundjay.com/mechanical/sledge-hammer-1.mp3"></audio>
+    
+    <style>
+        #overlay {{
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 999;
+            display: none;
+        }}
+        .shake {{
+            animation: shake 0.5s;
+            animation-iteration-count: 3;
+        }}
+        @keyframes shake {{
+            0% {{ transform: translate(0px, 0px); }}
+            25% {{ transform: translate(5px, -5px); }}
+            50% {{ transform: translate(-5px, 5px); }}
+            75% {{ transform: translate(5px, 5px); }}
+            100% {{ transform: translate(0px, 0px); }}
+        }}
+    </style>
+
+    <script>
+        function triggerDinoEffect() {{
+            const roar = document.getElementById("roar");
+            const stomp = document.getElementById("stomp");
+            const overlay = document.getElementById("overlay");
+
+            overlay.style.display = "block";
+            document.body.classList.add("shake");
+
+            roar.play();
+
+            setTimeout(() => {{
+                stomp.play();
+            }}, 1000);
+
+            setTimeout(() => {{
+                stomp.play();
+            }}, 1800);
+
+            setTimeout(() => {{
+                document.body.classList.remove("shake");
+                overlay.style.display = "none";
+            }}, 2500);
+        }}
+    </script>
+    """,
+    height=200,
+    scrolling=False,
+)
+
