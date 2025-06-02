@@ -295,11 +295,11 @@ components.html(
         }
 
         .colon {
-            animation: blink 2s infinite;
+            animation: blink 0.5s infinite;
         }
 
         .ampm {
-            animation: blink 2s infinite;
+            animation: blink 0.5s infinite;
             
         }
 
