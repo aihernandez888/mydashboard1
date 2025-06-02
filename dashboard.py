@@ -580,7 +580,7 @@ components.html(
     </div>
 
     <script>
-        let originalDuration = 15; // seconds — adjust this for full session (e.g., 1500 for 25 min)
+        let originalDuration = 1500; // seconds — adjust this for full session (e.g., 1500 for 25 min)
         let remaining = originalDuration;
         let timerInterval = null;
         let isPaused = false;
