@@ -476,7 +476,7 @@ components.html(
         z-index: 30;
     }
 
-    .launch {
+    .launching {
         transform: translateX(-50%) translateY(-120vh);
     }
 
@@ -513,7 +513,12 @@ components.html(
 
     rocket.addEventListener("click", () => {
         overlay.style.display = "block";
-        rocket.classList.add("launch");
+        rocket.style.transition = "none"; // reset transition
+        rocket.classList.remove("launching"); // reset
+        void rocket.offsetWidth; // trigger reflow
+        rocket.style.transition = "transform 5s ease-in";
+        rocket.classList.add("launching"); // now trigger launch
+
         sound.currentTime = 0;
         sound.play();
 
@@ -528,7 +533,7 @@ components.html(
         }, 500);
 
         setTimeout(() => {
-            rocket.classList.remove("launch");
+            rocket.classList.remove("launching");
             overlay.style.display = "none";
         }, 5000);
     });
