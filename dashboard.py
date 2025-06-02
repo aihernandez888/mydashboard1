@@ -302,35 +302,35 @@ components.html(
 
 # Bob Ross
 
-<div id="bobRossPlayer"></div>
+import streamlit as st
+import random
 
-<script>
-// List of Bob Ross video IDs
-const bobRossVideos = [
-  "oh5p5f5_-7A", // The Grandeur of Summer
-  "1AIeDl5sHVI", // Deep Wilderness Home
-  "Lel6x5V_T6g", // Island in the Wilderness
-  "jajcg59aKZw", // The Grandeur of Summer (different ep)
-  "TdphtMWjies", // Quiet Inlet
-  "Z2F2TcEM4v0", // Towering Glacier
-  "YLO7tCdBVrA", // Reflections of Calm
-  "9cL2OHU85no", // Tranquil Dawn
-  "hYw2I2YJz2k", // Desert Hues
-  "iVgNe-8a_RI"  // Evening at the Falls
-];
+# List of Bob Ross video IDs
+bob_ross_videos = [
+    "oh5p5f5_-7A",
+    "1AIeDl5sHVI",
+    "Lel6x5V_T6g",
+    "jajcg59aKZw",
+    "TdphtMWjies",
+    "Z2F2TcEM4v0",
+    "YLO7tCdBVrA",
+    "9cL2OHU85no",
+    "hYw2I2YJz2k",
+    "iVgNe-8a_RI"
+]
 
-// Pick one at random
-const randomIndex = Math.floor(Math.random() * bobRossVideos.length);
-const videoId = bobRossVideos[randomIndex];
+# Pick a random video
+video_id = random.choice(bob_ross_videos)
 
-// Create the iframe
-document.getElementById("bobRossPlayer").innerHTML = `
-  <iframe width="320" height="180"
-    src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0"
+# Embed iframe using markdown
+video_html = f"""
+<iframe width="320" height="180"
+    src="https://www.youtube.com/embed/{video_id}?autoplay=1&rel=0"
     title="Random Bob Ross Episode"
     frameborder="0"
     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
     allowfullscreen>
-  </iframe>
-`;
-</script>
+</iframe>
+"""
+
+st.markdown(video_html, unsafe_allow_html=True)
