@@ -562,24 +562,25 @@ components.html(
         <h2>Pomodoro Timer</h2>
         <div id="timer" style="
             font-size: 60px;
-            color: #ff3c3c;
             background-color: #111;
             border: 4px solid #444;
             border-radius: 12px;
             padding: 20px 40px;
             width: fit-content;
             margin: 20px auto;
-            box-shadow: 0 0 20px #ff3c3c;
-        ">25:00</div>
+            color: #00ff00;
+            box-shadow: 0 0 20px #00ff00;
+        ">00:30</div>  <!-- You can change this to test the timer -->
         <div>
             <button onclick="startTimer()" style="padding: 10px 20px; margin: 5px; border-radius: 5px;">Start</button>
             <button onclick="pauseTimer()" style="padding: 10px 20px; margin: 5px; border-radius: 5px;">Pause</button>
             <button onclick="resetTimer()" style="padding: 10px 20px; margin: 5px; border-radius: 5px;">Reset</button>
         </div>
+        <audio id="alarmSound" src="http://soundbible.com/grab.php?id=1630&type=mp3" preload="auto"></audio>
     </div>
 
     <script>
-        let duration = 25 * 60;
+        let duration = 30;  # Set total seconds here for quick testing
         let remaining = duration;
         let timerInterval;
         let isPaused = false;
@@ -587,9 +588,27 @@ components.html(
         function updateDisplay() {
             let minutes = Math.floor(remaining / 60);
             let seconds = remaining % 60;
-            document.getElementById("timer").textContent =
-                (minutes < 10 ? "0" : "") + minutes + ":" + 
+
+            let color = "#00ff00";
+            let glow = "0 0 20px";
+
+            if (remaining <= 20 * 60 && remaining > 15 * 60) {
+                color = "#00aaff";
+            } else if (remaining <= 15 * 60 && remaining > 10 * 60) {
+                color = "#ffd700";
+            } else if (remaining <= 10 * 60 && remaining > 5 * 60) {
+                color = "#a64dff";
+            } else if (remaining <= 5 * 60) {
+                color = "#ff3c3c";
+            }
+
+            const timerElement = document.getElementById("timer");
+            timerElement.textContent =
+                (minutes < 10 ? "0" : "") + minutes + ":" +
                 (seconds < 10 ? "0" : "") + seconds;
+
+            timerElement.style.color = color;
+            timerElement.style.boxShadow = `${glow} ${color}`;
         }
 
         function startTimer() {
@@ -601,6 +620,7 @@ components.html(
                     updateDisplay();
                 } else if (remaining <= 0) {
                     clearInterval(timerInterval);
+                    document.getElementById("alarmSound").play();
                     alert("Pomodoro complete! Take a break.");
                 }
             }, 1000);
@@ -619,5 +639,5 @@ components.html(
         updateDisplay();
     </script>
     """,
-    height=400,
+    height=420,
 )
