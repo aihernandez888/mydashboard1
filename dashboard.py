@@ -456,87 +456,54 @@ components.html(
     <audio id="launchSound" src="http://soundbible.com/grab.php?id=1492&type=mp3"></audio>
 
     <style>
-    #overlay {
-        position: fixed;
-        top: 0; left: 0;
-        width: 100vw; height: 100vh;
-        background-color: rgba(0, 0, 0, 0.5);
-        display: none;
-        z-index: 10;
-    }
-
-    #rocket {
-        position: fixed;
-        bottom: 20px;
-        left: 50%;
-        transform: translateX(-50%) translateY(0);
-        font-size: 50px;
-        cursor: pointer;
-        transition: transform 5s ease-in;
-        z-index: 30;
-    }
-
-    .launching {
-        transform: translateX(-50%) translateY(-120vh);
-    }
-
-    .smoke {
-        position: fixed;
-        bottom: 80px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 20px;
-        height: 20px;
-        background: radial-gradient(circle, white 0%, transparent 70%);
-        border-radius: 50%;
-        opacity: 0.6;
-        animation: puff 1s forwards;
-        z-index: 20;
-    }
-
-    @keyframes puff {
-        0% {
-            opacity: 0.6;
-            transform: translate(-50%, 0) scale(1);
+        body {
+            margin: 0;
+            overflow-x: hidden;
         }
-        100% {
-            opacity: 0;
-            transform: translate(-50%, 30px) scale(2);
+
+        #overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            z-index: 10;
         }
-    }
+
+        #rocket {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 60px;
+            cursor: pointer;
+            z-index: 30;
+            transition: transform 5s ease-in;
+        }
+
+        .launch {
+            transform: translate(-50%, -150vh);
+        }
     </style>
 
     <script>
-    const rocket = document.getElementById("rocket");
-    const overlay = document.getElementById("overlay");
-    const sound = document.getElementById("launchSound");
+        const rocket = document.getElementById("rocket");
+        const overlay = document.getElementById("overlay");
+        const sound = document.getElementById("launchSound");
 
-    rocket.addEventListener("click", () => {
-        overlay.style.display = "block";
-        rocket.style.transition = "none"; // reset transition
-        rocket.classList.remove("launching"); // reset
-        void rocket.offsetWidth; // trigger reflow
-        rocket.style.transition = "transform 5s ease-in";
-        rocket.classList.add("launching"); // now trigger launch
+        rocket.addEventListener("click", () => {
+            overlay.style.display = "block";
+            rocket.classList.remove("launch");
+            void rocket.offsetWidth;  // Force reflow
+            rocket.classList.add("launch");
+            sound.currentTime = 0;
+            sound.play();
 
-        sound.currentTime = 0;
-        sound.play();
-
-        let puffCount = 0;
-        const puffInterval = setInterval(() => {
-            const puff = document.createElement("div");
-            puff.classList.add("smoke");
-            document.body.appendChild(puff);
-            setTimeout(() => puff.remove(), 1000);
-            puffCount++;
-            if (puffCount >= 4) clearInterval(puffInterval);
-        }, 500);
-
-        setTimeout(() => {
-            rocket.classList.remove("launching");
-            overlay.style.display = "none";
-        }, 5000);
-    });
+            setTimeout(() => {
+                rocket.classList.remove("launch");
+                overlay.style.display = "none";
+            }, 5000);
+        });
     </script>
     """,
     height=600,
