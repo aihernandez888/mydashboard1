@@ -452,10 +452,7 @@ import streamlit.components.v1 as components
 components.html(
     """
     <div id="overlay"></div>
-    <div id="rocketContainer">
-        <div id="rocket">🚀</div>
-    </div>
-
+    <div id="rocket">🚀</div>
     <audio id="launchSound" src="http://soundbible.com/grab.php?id=1492&type=mp3"></audio>
 
     <style>
@@ -468,29 +465,24 @@ components.html(
         z-index: 10;
     }
 
-    #rocketContainer {
-        position: relative;
-        height: 300px;
-        margin-top: 20px;
-        z-index: 20;
-        text-align: center;
-    }
-
     #rocket {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
         font-size: 50px;
         cursor: pointer;
         transition: transform 5s ease-in;
-        position: relative;
         z-index: 30;
     }
 
     .launch {
-        transform: translateY(-500px);
+        transform: translate(-50%, -120vh); /* Fly up past the screen */
     }
 
     .smoke {
-        position: absolute;
-        top: 60px;
+        position: fixed;
+        bottom: 80px;
         left: 50%;
         transform: translateX(-50%);
         width: 20px;
@@ -499,6 +491,7 @@ components.html(
         border-radius: 50%;
         opacity: 0.6;
         animation: puff 1s forwards;
+        z-index: 20;
     }
 
     @keyframes puff {
@@ -517,31 +510,23 @@ components.html(
     const rocket = document.getElementById("rocket");
     const overlay = document.getElementById("overlay");
     const sound = document.getElementById("launchSound");
-    const container = document.getElementById("rocketContainer");
 
     rocket.addEventListener("click", () => {
-        // Dim background
         overlay.style.display = "block";
-
-        // Add launch class to animate
         rocket.classList.add("launch");
-
-        // Play sound
         sound.currentTime = 0;
         sound.play();
 
-        // Add smoke puffs every 500ms for 2s
         let puffCount = 0;
         const puffInterval = setInterval(() => {
             const puff = document.createElement("div");
             puff.classList.add("smoke");
-            container.appendChild(puff);
+            document.body.appendChild(puff);
             setTimeout(() => puff.remove(), 1000);
             puffCount++;
             if (puffCount >= 4) clearInterval(puffInterval);
         }, 500);
 
-        // Reset after 5s
         setTimeout(() => {
             rocket.classList.remove("launch");
             overlay.style.display = "none";
@@ -549,5 +534,6 @@ components.html(
     });
     </script>
     """,
-    height=400,
+    height=600,
 )
+
