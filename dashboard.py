@@ -299,7 +299,7 @@ components.html(
         }
 
         .ampm {
-            animation: blink 5s infinite;
+            animation: blink 1s infinite;
             font-size: 0.75em;
             vertical-align: super;
             margin-left: 5px;
