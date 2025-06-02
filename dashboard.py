@@ -576,11 +576,11 @@ components.html(
             <button onclick="pauseTimer()" style="padding: 10px 20px; margin: 5px; border-radius: 5px;">Pause</button>
             <button onclick="resetTimer()" style="padding: 10px 20px; margin: 5px; border-radius: 5px;">Reset</button>
         </div>
-        <audio id="alarmSound" src="http://soundbible.com/grab.php?id=1492&type=mp3" preload="auto"></audio>
+        <audio id="alarmSound" src="http://soundbible.com/grab.php?id=1630&type=mp3" preload="auto"></audio>
     </div>
 
     <script>
-        let originalDuration = 30; // seconds — adjust this for full session (e.g., 1500 for 25 min)
+        let originalDuration = 15; // seconds — adjust this for full session (e.g., 1500 for 25 min)
         let remaining = originalDuration;
         let timerInterval = null;
         let isPaused = false;
