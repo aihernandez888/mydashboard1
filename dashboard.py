@@ -387,7 +387,7 @@ components.html(
     <div id="overlay"></div>
     <div id="dino" onclick="triggerDinoEffect()" style="font-size: 50px; cursor: pointer; text-align: center;">🦖</div>
     
-    <audio id="roar" src="https://soundbible.com/1319-Tyrannosaurus-Rex.mp3"></audio>
+    <audio id="roar" src="http://soundbible.com/grab.php?id=1319&type=mp3"></audio>
     <audio id="stomp" src="https://www.soundjay.com/mechanical/sledge-hammer-1.mp3"></audio>
     
     <style>
