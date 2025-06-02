@@ -469,7 +469,7 @@ components.html(
         position: fixed;
         bottom: 20px;
         left: 50%;
-        transform: translateX(-50%);
+        transform: translateX(-50%) translateY(0);
         font-size: 50px;
         cursor: pointer;
         transition: transform 5s ease-in;
@@ -477,7 +477,7 @@ components.html(
     }
 
     .launch {
-        transform: translate(-50%, -120vh); /* Fly up past the screen */
+        transform: translateX(-50%) translateY(-120vh);
     }
 
     .smoke {
@@ -536,4 +536,3 @@ components.html(
     """,
     height=600,
 )
-
