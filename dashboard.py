@@ -452,59 +452,102 @@ import streamlit.components.v1 as components
 components.html(
     """
     <div id="overlay"></div>
-    <div id="rocket">🚀</div>
+    <div id="rocketContainer">
+        <div id="rocket">🚀</div>
+    </div>
+
     <audio id="launchSound" src="http://soundbible.com/grab.php?id=1492&type=mp3"></audio>
 
     <style>
-        body {
-            margin: 0;
-            overflow-x: hidden;
-        }
+    #overlay {
+        position: fixed;
+        top: 0; left: 0;
+        width: 100vw; height: 100vh;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: none;
+        z-index: 10;
+    }
 
-        #overlay {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100vw; height: 100vh;
-            background-color: rgba(0, 0, 0, 0.5);
-            display: none;
-            z-index: 10;
-        }
+    #rocketContainer {
+        position: relative;
+        height: 300px;
+        margin-top: 20px;
+        z-index: 20;
+        text-align: center;
+    }
 
-        #rocket {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 60px;
-            cursor: pointer;
-            z-index: 30;
-            transition: transform 5s ease-in;
-        }
+    #rocket {
+        font-size: 50px;
+        cursor: pointer;
+        transition: transform 5s ease-in;
+        position: relative;
+        z-index: 30;
+    }
 
-        .launch {
-            transform: translate(-50%, -150vh);
+    .launch {
+        transform: translateY(-500px);
+    }
+
+    .smoke {
+        position: absolute;
+        top: 60px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 20px;
+        height: 20px;
+        background: radial-gradient(circle, white 0%, transparent 70%);
+        border-radius: 50%;
+        opacity: 0.6;
+        animation: puff 1s forwards;
+    }
+
+    @keyframes puff {
+        0% {
+            opacity: 0.6;
+            transform: translate(-50%, 0) scale(1);
         }
+        100% {
+            opacity: 0;
+            transform: translate(-50%, 30px) scale(2);
+        }
+    }
     </style>
 
     <script>
-        const rocket = document.getElementById("rocket");
-        const overlay = document.getElementById("overlay");
-        const sound = document.getElementById("launchSound");
+    const rocket = document.getElementById("rocket");
+    const overlay = document.getElementById("overlay");
+    const sound = document.getElementById("launchSound");
+    const container = document.getElementById("rocketContainer");
 
-        rocket.addEventListener("click", () => {
-            overlay.style.display = "block";
+    rocket.addEventListener("click", () => {
+        // Dim background
+        overlay.style.display = "block";
+
+        // Add launch class to animate
+        rocket.classList.add("launch");
+
+        // Play sound
+        sound.currentTime = 0;
+        sound.play();
+
+        // Add smoke puffs every 500ms for 2s
+        let puffCount = 0;
+        const puffInterval = setInterval(() => {
+            const puff = document.createElement("div");
+            puff.classList.add("smoke");
+            container.appendChild(puff);
+            setTimeout(() => puff.remove(), 1000);
+            puffCount++;
+            if (puffCount >= 4) clearInterval(puffInterval);
+        }, 500);
+
+        // Reset after 5s
+        setTimeout(() => {
             rocket.classList.remove("launch");
-            void rocket.offsetWidth;  // Force reflow
-            rocket.classList.add("launch");
-            sound.currentTime = 0;
-            sound.play();
-
-            setTimeout(() => {
-                rocket.classList.remove("launch");
-                overlay.style.display = "none";
-            }, 5000);
-        });
+            overlay.style.display = "none";
+        }, 5000);
+    });
     </script>
     """,
-    height=600,
+    height=400,
 )
