@@ -269,36 +269,35 @@ import streamlit.components.v1 as components
 
 components.html(
     """
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+
     <div id="clock" style="
-        font-family: 'Courier New', monospace;
-        font-size: 7vw;
+        font-family: 'VT323', monospace;
+        font-size: 60px;
         color: red;
-        font-weight: bold;
         text-align: center;
-        letter-spacing: 2px;
-        padding: 20px 0 40px 0;
-    ">
+        text-shadow: 0 0 5px red, 0 0 10px red, 0 0 20px red;
+        padding: 20px;
+        ">
     </div>
 
     <script>
     function updateClock() {
         const now = new Date();
-        const options = {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-            hour: 'numeric',
-            minute: 'numeric',
-            second: 'numeric',
-            hour12: true
-        };
-        document.getElementById('clock').textContent = now.toLocaleString('en-US', options);
+        let hours = now.getHours();
+        const minutes = now.getMinutes().toString().padStart(2, '0');
+        const seconds = now.getSeconds().toString().padStart(2, '0');
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12 || 12;  // Convert to 12-hour format
+        const date = now.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        const timeString = `${date} ${hours}:${minutes}:${seconds} ${ampm}`;
+        document.getElementById('clock').textContent = timeString;
     }
     setInterval(updateClock, 1000);
     updateClock();
     </script>
     """,
-    height=150,  # Increase height to fit on mobile
+    height=150,
     scrolling=False,
 )
 
