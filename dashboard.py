@@ -310,8 +310,16 @@ import random
 
 # List of Bob Ross video IDs
 bob_ross_videos = [
-    "oh5p5f5_-7A",
-    "Xzv3iiWi1Wo"
+    #Season 30
+    "vGsW_6BCukU",
+    "Xzv3iiWi1Wo",
+    "BSjee-ond7w",
+    "LEz4UVL7POE",
+    "enutOy-nsZk",
+    "CY6sGFs209E",
+    "jq8bIbpW7DQ",
+    "eTEKGOi6SVg",
+    "fz0YjqtHW84"
 ]
 
 # Pick a random video
