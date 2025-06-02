@@ -288,8 +288,8 @@ components.html(
         const minutes = now.getMinutes().toString().padStart(2, '0');
         const seconds = now.getSeconds().toString().padStart(2, '0');
         const ampm = hours >= 12 ? 'PM' : 'AM';
-        hours = hours % 12 || 12;  # Convert to 12-hour format
-        const date = now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        hours = hours % 12 || 12;  // Convert to 12-hour format
+        const date = now.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
         const timeString = `${date} ${hours}:${minutes}:${seconds} ${ampm}`;
         document.getElementById('clock').textContent = timeString;
     }
@@ -297,9 +297,10 @@ components.html(
     updateClock();
     </script>
     """,
-    height=200,
+    height=150,
     scrolling=False,
 )
+
 
 
 # Bob Ross
