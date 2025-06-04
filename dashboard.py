@@ -643,3 +643,75 @@ components.html(
     """,
     height=450,
 )
+
+#Nostalgia TV
+
+import streamlit as st
+import streamlit.components.v1 as components
+import random
+
+# --- YouTube URLs ---
+video_urls = [
+    "https://www.youtube.com/embed/8TKqq1mtD5I",
+    "https://www.youtube.com/embed/3PkYr4IX9Qw",
+    "https://www.youtube.com/embed/bJPYF49YtPY",
+    "https://www.youtube.com/embed/kJFB6rH3z2A"
+    # Add more embed URLs here!
+]
+
+# --- Randomly pick a video URL on each run ---
+selected_url = random.choice(video_urls)
+
+# --- HTML/JS/CSS for TV button and video overlay ---
+components.html(f"""
+<div style="position: relative;">
+    <span id="tvButton" style="font-size: 40px; cursor: pointer;">📺</span>
+</div>
+
+<div id="tvOverlay" style="
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: rollIn 1s ease-in-out;
+">
+    <div style="
+        width: 80vw;
+        max-width: 640px;
+        border: 8px solid #555;
+        border-radius: 12px;
+        background-color: black;
+        box-shadow: 0 0 20px red;
+    ">
+        <iframe id="tvFrame" width="100%" height="360" src="{selected_url}?autoplay=1" 
+            frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+    </div>
+</div>
+
+<style>
+@keyframes rollIn {{
+    from {{
+        transform: translateY(-100vh) rotate(-10deg);
+        opacity: 0;
+    }}
+    to {{
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+    }}
+}}
+</style>
+
+<script>
+const tvBtn = document.getElementById("tvButton");
+const tvOverlay = document.getElementById("tvOverlay");
+
+tvBtn.onclick = () => {{
+    tvOverlay.style.display = "flex";
+}};
+</script>
+""", height=600)
