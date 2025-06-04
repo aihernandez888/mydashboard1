@@ -649,69 +649,74 @@ components.html(
 import streamlit as st
 import streamlit.components.v1 as components
 
-video_urls = [
-    "https://www.youtube.com/embed/8TKqq1mtD5I",
-    "https://www.youtube.com/embed/3PkYr4IX9Qw",
-    "https://www.youtube.com/embed/bJPYF49YtPY",
-    "https://www.youtube.com/embed/kJFB6rH3z2A"
-    # Add more embed-format URLs here
-]
-
-# Prepare the JS array
-video_array_js = '[' + ','.join(f'"{url}"' for url in video_urls) + ']'
-
-components.html(f"""
-<div style="position: relative;">
-    <span id="tvButton" style="font-size: 40px; cursor: pointer;">📺</span>
-</div>
-
-<div id="tvOverlay" style="
-    display: none;
-    position: fixed;
-    top: 0; left: 0;
-    width: 100vw; height: 100vh;
-    background-color: rgba(0, 0, 0, 0.8);
-    z-index: 9999;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    animation: rollIn 1s ease-in-out;
-">
-    <div id="tvContainer" style="
-        width: 80vw;
-        max-width: 640px;
-        border: 8px solid #555;
-        border-radius: 12px;
-        background-color: black;
-        box-shadow: 0 0 20px red;
-    ">
+components.html(
+    """
+    <div style="text-align: center; margin-top: 20px;">
+        <span id="tvBtn" style="font-size: 40px; cursor: pointer;">📺</span>
     </div>
-</div>
 
-<style>
-@keyframes rollIn {{
-    from {{
-        transform: translateY(-100vh) rotate(-10deg);
-        opacity: 0;
-    }}
-    to {{
-        transform: translateY(0) rotate(0deg);
-        opacity: 1;
-    }}
-}}
-</style>
+    <div id="tvOverlay" style="
+        display: none;
+        position: fixed;
+        top: 0; left: 0;
+        width: 100vw; height: 100vh;
+        background-color: rgba(0, 0, 0, 0.85);
+        z-index: 9999;
+        align-items: center;
+        justify-content: center;
+        animation: rollIn 1s ease-in-out;
+    ">
+        <div id="tvContainer" style="
+            width: 640px;
+            max-width: 90vw;
+            background-color: #111;
+            border: 10px solid red;
+            box-shadow: 0 0 30px red;
+        "></div>
+    </div>
 
-<script>
-const videoUrls = {video_array_js};
-const tvBtn = document.getElementById("tvButton");
-const tvOverlay = document.getElementById("tvOverlay");
-const tvContainer = document.getElementById("tvContainer");
+    <style>
+        @keyframes rollIn {
+            0% {
+                transform: translateY(-100%) scale(0.7);
+                opacity: 0;
+            }
+            100% {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+        }
+    </style>
 
-tvBtn.onclick = function() {{
-    const randomUrl = videoUrls[Math.floor(Math.random() * videoUrls.length)];
-    const iframe = '<iframe width="100%" height="360" src="' + randomUrl + '?autoplay=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>';
-    tvContainer.innerHTML = iframe;
-    tvOverlay.style.display = "flex";
-}};
-</script>
-""", height=600)
+    <script>
+        const tvBtn = document.getElementById("tvBtn");
+        const tvOverlay = document.getElementById("tvOverlay");
+        const tvContainer = document.getElementById("tvContainer");
+
+        const videoUrls = [
+            "https://www.youtube.com/embed/8TKqq1mtD5I",
+            "https://www.youtube.com/embed/3PkYr4IX9Qw",
+            "https://www.youtube.com/embed/bJPYF49YtPY",
+            "https://www.youtube.com/embed/kJFB6rH3z2A"
+            // 👉 Add more URLs here
+        ];
+
+        tvBtn.onclick = function() {
+            const randomUrl = videoUrls[Math.floor(Math.random() * videoUrls.length)];
+            const iframe = '<iframe width="100%" height="360" src="' + randomUrl + '?autoplay=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>';
+            tvContainer.innerHTML = iframe;
+            tvOverlay.style.display = "flex";
+        };
+
+        // Optional: click anywhere outside the video to close
+        tvOverlay.onclick = function(e) {
+            if (e.target === tvOverlay) {
+                tvOverlay.style.display = "none";
+                tvContainer.innerHTML = "";
+            }
+        };
+    </script>
+    """,
+    height=600,
+    scrolling=False,
+)
