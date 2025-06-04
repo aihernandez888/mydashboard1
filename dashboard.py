@@ -697,8 +697,26 @@ components.html(
             "https://www.youtube.com/embed/8TKqq1mtD5I",
             "https://www.youtube.com/embed/3PkYr4IX9Qw",
             "https://www.youtube.com/embed/bJPYF49YtPY",
-            "https://www.youtube.com/embed/kJFB6rH3z2A"
-            // 👉 Add more URLs here
+            "https://www.youtube.com/embed/kJFB6rH3z2A",
+            #MB S9
+            "https://www.youtube.com/embed/v6RWSfGiDuQ",
+            #MB S8
+            "https://www.youtube.com/embed/1xDvSm6dJUU",
+            "https://www.youtube.com/embed/WfPtRq-PKzw",
+            "https://www.youtube.com/embed/963V7hhEeSs",
+            "https://www.youtube.com/embed/DnPy7cRmits",
+            "https://www.youtube.com/embed/dOHWrJo-Ufk",
+            "https://www.youtube.com/embed/oWWNZ_eciGI",
+            "https://www.youtube.com/embed/yaWFyxhj99U",
+            "https://www.youtube.com/embed/yTJzyskVdDE",
+            "https://www.youtube.com/embed/DFSHBugu34E",
+            "https://www.youtube.com/embed/luaYGrSxgGI",
+            #MB S5
+            "https://www.youtube.com/embed/hP9QUQCd_Jc",
+            "https://www.youtube.com/embed/a7G4qPtiU4E",
+            #MB S4
+            "https://www.youtube.com/embed/E-MHDbqbEz4"
+            
         ];
 
         tvBtn.onclick = function() {
