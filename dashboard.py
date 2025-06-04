@@ -344,38 +344,38 @@ components.html(
 
 # Bob Ross
 
-import streamlit as st
-import random
+#import streamlit as st
+#import random
 
 # List of Bob Ross video IDs
-bob_ross_videos = [
+#bob_ross_videos = [
     #Season 30
-    "vGsW_6BCukU",
-    "Xzv3iiWi1Wo",
-    "BSjee-ond7w",
-    "LEz4UVL7POE",
-    "enutOy-nsZk",
-    "CY6sGFs209E",
-    "jq8bIbpW7DQ",
-    "eTEKGOi6SVg",
-    "fz0YjqtHW84"
-]
+ #   "vGsW_6BCukU",
+  #  "Xzv3iiWi1Wo",
+   # "BSjee-ond7w",
+    #"LEz4UVL7POE",
+#    "enutOy-nsZk",
+ #   "CY6sGFs209E",
+#    "jq8bIbpW7DQ",
+#    "eTEKGOi6SVg",
+#    "fz0YjqtHW84"
+#]
 
 # Pick a random video
-video_id = random.choice(bob_ross_videos)
+#video_id = random.choice(bob_ross_videos)
 
 # Embed iframe using markdown
-video_html = f"""
-<iframe width="320" height="180"
-    src="https://www.youtube.com/embed/{video_id}?autoplay=1&rel=0"
-    title="Random Bob Ross Episode"
-    frameborder="0"
-    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-    allowfullscreen>
-</iframe>
-"""
+#video_html = f"""
+#<iframe width="320" height="180"
+#    src="https://www.youtube.com/embed/{video_id}?autoplay=1&rel=0"
+#    title="Random Bob Ross Episode"
+#    frameborder="0"
+#    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+#    allowfullscreen>
+#</iframe>
+#"""
 
-st.markdown(video_html, unsafe_allow_html=True)
+#st.markdown(video_html, unsafe_allow_html=True)
 
 #trex thing
 
@@ -650,19 +650,18 @@ import streamlit as st
 import streamlit.components.v1 as components
 import random
 
-# --- YouTube URLs ---
+# --- YouTube Embed URLs ---
 video_urls = [
     "https://www.youtube.com/embed/8TKqq1mtD5I",
     "https://www.youtube.com/embed/3PkYr4IX9Qw",
     "https://www.youtube.com/embed/bJPYF49YtPY",
     "https://www.youtube.com/embed/kJFB6rH3z2A"
-    # Add more embed URLs here!
+    # Add more URLs here (in EMBED format)
 ]
 
-# --- Randomly pick a video URL on each run ---
-selected_url = random.choice(video_urls)
+# Convert to JS array format
+video_array_js = '[' + ','.join(f'"{url}"' for url in video_urls) + ']'
 
-# --- HTML/JS/CSS for TV button and video overlay ---
 components.html(f"""
 <div style="position: relative;">
     <span id="tvButton" style="font-size: 40px; cursor: pointer;">📺</span>
@@ -680,7 +679,7 @@ components.html(f"""
     justify-content: center;
     animation: rollIn 1s ease-in-out;
 ">
-    <div style="
+    <div id="tvContainer" style="
         width: 80vw;
         max-width: 640px;
         border: 8px solid #555;
@@ -688,8 +687,6 @@ components.html(f"""
         background-color: black;
         box-shadow: 0 0 20px red;
     ">
-        <iframe id="tvFrame" width="100%" height="360" src="{selected_url}?autoplay=1" 
-            frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
     </div>
 </div>
 
@@ -707,10 +704,15 @@ components.html(f"""
 </style>
 
 <script>
+const videoUrls = {video_array_js};
 const tvBtn = document.getElementById("tvButton");
 const tvOverlay = document.getElementById("tvOverlay");
+const tvContainer = document.getElementById("tvContainer");
 
 tvBtn.onclick = () => {{
+    const randomUrl = videoUrls[Math.floor(Math.random() * videoUrls.length)];
+    tvContainer.innerHTML = `<iframe width="100%" height="360" src="${randomUrl}?autoplay=1" 
+        frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
     tvOverlay.style.display = "flex";
 }};
 </script>
