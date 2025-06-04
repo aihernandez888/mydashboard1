@@ -648,18 +648,16 @@ components.html(
 
 import streamlit as st
 import streamlit.components.v1 as components
-import random
 
-# --- YouTube Embed URLs ---
 video_urls = [
     "https://www.youtube.com/embed/8TKqq1mtD5I",
     "https://www.youtube.com/embed/3PkYr4IX9Qw",
     "https://www.youtube.com/embed/bJPYF49YtPY",
     "https://www.youtube.com/embed/kJFB6rH3z2A"
-    # Add more URLs here (in EMBED format)
+    # Add more embed-format URLs here
 ]
 
-# Convert to JS array format
+# Prepare the JS array
 video_array_js = '[' + ','.join(f'"{url}"' for url in video_urls) + ']'
 
 components.html(f"""
@@ -709,10 +707,10 @@ const tvBtn = document.getElementById("tvButton");
 const tvOverlay = document.getElementById("tvOverlay");
 const tvContainer = document.getElementById("tvContainer");
 
-tvBtn.onclick = () => {{
+tvBtn.onclick = function() {{
     const randomUrl = videoUrls[Math.floor(Math.random() * videoUrls.length)];
-    tvContainer.innerHTML = `<iframe width="100%" height="360" src="${randomUrl}?autoplay=1" 
-        frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+    const iframe = '<iframe width="100%" height="360" src="' + randomUrl + '?autoplay=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>';
+    tvContainer.innerHTML = iframe;
     tvOverlay.style.display = "flex";
 }};
 </script>
